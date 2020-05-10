@@ -5,3 +5,10 @@ docker-compose up
 
 ### 종료
 docker-compose down
+
+##### used specs
+- mariadb
+- react
+- express
+- typescript
+- 등등...
