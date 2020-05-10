@@ -1,3 +1,3 @@
 ##### used framework
-react
-typescirpt
+- react
+- typescirpt
