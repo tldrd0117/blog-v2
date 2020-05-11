@@ -16,7 +16,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "rm -rf build && react-scripts build && rm -rf ../server/build && cp -R build ../server/build",
+    "build": "rm -rf build && react-scripts build && rm -rf ../server/dist/client && cp -R build ../server/dist/client",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

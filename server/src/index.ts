@@ -1,14 +1,13 @@
 import express from "express"
 import path from "path"
+import loader from "./loader"
 
-class App {
-    public application : express.Application
-
-    constructor(){
-        this.application = express()
-    }
+const startServer = async () =>{
+    const app = express()
+    await loader({ expressApp: app })
+    app.listen(8080)
+    console.log("startServer")
 }
-const app = new App().application
-app.use(express.static(path.resolve(__dirname, "../build")))
-console.log(path.resolve(__dirname, "../build"))
-app.listen(8080)
+
+startServer()
+

@@ -13,6 +13,8 @@ services:
       - 3306:3306
   node:
     build: ./server
+    environment:
+      - NODE_ENV=production
     ports: 
       - 8080:8080
     
