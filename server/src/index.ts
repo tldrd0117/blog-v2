@@ -1,6 +1,6 @@
 import express from "express"
 import path from "path"
-import loader from "./loader"
+import loader from "./loaders"
 
 const startServer = async () =>{
     const app = express()
