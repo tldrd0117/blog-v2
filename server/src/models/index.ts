@@ -2,6 +2,8 @@ import User from './user'
 import { DataTypes, Sequelize } from 'sequelize/types'
 import bcrypt from "bcrypt-nodejs"
 import Post from './post';
+import Tag from './tag';
+import Comment from './comment';
 
 export default function init(sequelize : Sequelize) {
     User.init({
@@ -49,9 +51,118 @@ export default function init(sequelize : Sequelize) {
         }
     });
 
-    // Post.init({
+    Post.init({
+        id: {
+            type: DataTypes.INTEGER.UNSIGNED,
+            autoIncrement: true,
+            primaryKey: true,
+            allowNull: false
+        },
+        authorId:{
+            type: DataTypes.INTEGER.UNSIGNED,
+            allowNull: false
+        },
+        title:{
+            type: DataTypes.STRING(200),
+            allowNull: false
+        },
+        content:{
+            type: DataTypes.TEXT,
+            allowNull: false
+        }
+    },{
+        sequelize,
+        tableName: "posts",
+        engine: "InnoDB",
+        charset: "utf8",
+        indexes: [
+            {
+                fields: ["id"]
+            }
+        ],
+    })
 
-    // })
+    Tag.init({
+        id:{
+            type: DataTypes.INTEGER.UNSIGNED,
+            autoIncrement: true,
+            primaryKey: true,
+            allowNull: false
+        },
+        postId:{
+            type: DataTypes.INTEGER.UNSIGNED,
+            allowNull: false
+        },
+        tagName:{
+            type: DataTypes.STRING(200),
+            allowNull: false
+        }
+    },{
+        sequelize,
+        tableName: "tags",
+        engine: "InnoDB",
+        charset: "utf8",
+        indexes: [
+            {
+                fields: ["id"]
+            }
+        ],
+    })
+
+    Comment.init({
+        id:{
+            type: DataTypes.INTEGER.UNSIGNED,
+            autoIncrement: true,
+            primaryKey: true,
+            allowNull: false
+        },
+        postId:{
+            type: DataTypes.INTEGER.UNSIGNED,
+            allowNull: false
+        },
+        content:{
+            type: DataTypes.STRING(200),
+            allowNull: false
+        }
+    },{
+        sequelize,
+        tableName: "comments",
+        engine: "InnoDB",
+        charset: "utf8",
+        indexes: [
+            {
+                fields: ["id"]
+            }
+        ],
+    })
+    Post.hasMany(Tag, {
+        sourceKey: 'id',
+        foreignKey: 'postId',
+        as: 'tags'
+    })
+    Tag.belongsTo(Post, {
+        targetKey: 'id',
+        foreignKey: 'postId'
+    })
+    Post.hasMany(Comment, {
+        sourceKey: 'id',
+        foreignKey: 'postId',
+        as: 'comments'
+    })
+    Comment.belongsTo(Post, {
+        targetKey: 'id',
+        foreignKey: 'postId'
+    })
+
+    User.hasMany(Post, {
+        sourceKey: 'id',
+        foreignKey: 'authorId',
+        as: 'posts'
+    })
+    Post.belongsTo(User, {
+        targetKey: 'id',
+        foreignKey: 'authorId',
+    })
 }
 
 
