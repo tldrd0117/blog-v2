@@ -1,11 +1,15 @@
 import User from './user'
-import { DataTypes, Sequelize } from 'sequelize/types'
+import { DataTypes, Sequelize } from 'sequelize'
 import bcrypt from "bcrypt-nodejs"
 import Post from './post';
 import Tag from './tag';
 import Comment from './comment';
 
-export default function init(sequelize : Sequelize) {
+export const models = {
+    User, Post, Tag, Comment
+}
+
+export const init = (sequelize : Sequelize) => {
     User.init({
         id:{
             type: DataTypes.INTEGER.UNSIGNED,

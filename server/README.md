@@ -13,3 +13,6 @@ Https : https://webactually.com/2018/11/http%EC%97%90%EC%84%9C-https%EB%A1%9C-%E
 - docker run --name blog-v2_node_1 -p 8080:8080 -d blog-v2/node
 - docker rm --force blog-v2_node_1
 - docker exec -it blog-v2_node_1 /bin/bash
+
+
+- docker run --name blog-v2_db_1 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=qwer1234 -d mariadb

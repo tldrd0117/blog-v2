@@ -2,6 +2,7 @@ import express from "express"
 import cors from "cors"
 import path from "path"
 import bodyParser from 'body-parser';
+import router from '../contorollers'
 
 let clientUrl = ""
 if(process.env.NODE_ENV == "production"){
@@ -14,5 +15,6 @@ export default ({ app }:{ app : express.Application }) => {
     app.use(cors())
     app.use(bodyParser.json())
     app.use(express.static(clientUrl))
+    app.use(router())
     return app
 }

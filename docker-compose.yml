@@ -1,7 +1,19 @@
 version: '3.1'
-
 services:
-
+  node:
+    build: 
+      context: ./server
+      dockerfile: ./Dockerfile-dev
+    environment:
+      - NODE_ENV=development
+    volumes: 
+      - ./server:/usr/src/app
+    ports: 
+      - 8080:8080
+    depends_on: 
+      - db
+    links: 
+      - db:database
   db:
     image: mariadb
     restart: always
@@ -9,13 +21,8 @@ services:
       - ./mariadb/data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: qwer1234
+      MYSQL_DATABASE: blog
     ports: 
       - 3306:3306
-  node:
-    build: ./server
-    environment:
-      - NODE_ENV=production
-    ports: 
-      - 8080:8080
-      - 3306:3306
+  
     
