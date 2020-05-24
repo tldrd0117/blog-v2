@@ -11,4 +11,13 @@ export default (router: Router) => {
         const result = await postService.getPosts()
         return res.json(result).status(200);
     })
+    postRouter.post("/create", async function(req: Request, res: Response){
+
+    })
+    postRouter.post("/update", async function(req: Request, res: Response){
+        
+    })
+    postRouter.post("/delete", async function(req: Request, res: Response){
+
+    })
 }

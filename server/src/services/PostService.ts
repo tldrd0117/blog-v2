@@ -11,4 +11,8 @@ export default class PostService{
         return result
     }
 
+    async createPost(){
+        
+    }
+
 }
