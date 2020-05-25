@@ -16,7 +16,6 @@ export const init = (sequelize : Sequelize) => {
             autoIncrement: true,
             primaryKey: true,
             allowNull: false
-    
         },
         email:{
             type: DataTypes.STRING(50),
