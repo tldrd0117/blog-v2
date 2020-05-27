@@ -1,6 +1,7 @@
 import { Service } from "typedi";
 import User from "../models/user";
 import argon2 from 'argon2';
+import crypto from 'crypto'
 
 @Service()
 export default class AuthService{
@@ -8,13 +9,16 @@ export default class AuthService{
         const user = await User.findOne({
             where: email
         })
-        argon2.verify(user!!.password, password);
-        
+        if(user){
+            const correct = argon2.verify(user.password, password);
+        }
     }
 
-    //salt 생성
+    //salt 생성 
     //
-    async signUp(){
+    async signUp(user: User){
+        const salt = crypto.randomBytes(32)
+        const hashedPassword = argon2.hash(user.password, {salt})
 
     }
 }
