@@ -5,6 +5,6 @@ import { Application } from "express";
  
 export default async ({ expressApp }:{ expressApp: Application }) => {
     await expressLoader({ app: expressApp });
-    await sequalizeLoader()
-    await di()
+    await sequalizeLoader();
+    await di();
 }

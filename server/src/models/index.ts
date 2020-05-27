@@ -28,11 +28,11 @@ export const init = (sequelize : Sequelize) => {
             allowNull: false
         },
         password:{
-            type: new DataTypes.STRING(15),
+            type: DataTypes.STRING(15),
             allowNull: false
         },
         salt:{
-            type: new DataTypes.STRING(30),
+            type: DataTypes.STRING(30),
             allowNull: false
         }
     },{
@@ -83,7 +83,7 @@ export const init = (sequelize : Sequelize) => {
                 fields: ["id"]
             }
         ],
-    })
+    });
 
     Tag.init({
         id:{
@@ -110,7 +110,7 @@ export const init = (sequelize : Sequelize) => {
                 fields: ["id"]
             }
         ],
-    })
+    });
 
     Comment.init({
         id:{
@@ -137,35 +137,34 @@ export const init = (sequelize : Sequelize) => {
                 fields: ["id"]
             }
         ],
-    })
+    });
     Post.hasMany(Tag, {
         sourceKey: 'id',
         foreignKey: 'postId',
         as: 'tags'
-    })
+    });
     Tag.belongsTo(Post, {
         targetKey: 'id',
         foreignKey: 'postId'
-    })
+    });
     Post.hasMany(Comment, {
         sourceKey: 'id',
         foreignKey: 'postId',
         as: 'comments'
-    })
+    });
     Comment.belongsTo(Post, {
         targetKey: 'id',
         foreignKey: 'postId'
-    })
-
+    });
     User.hasMany(Post, {
         sourceKey: 'id',
         foreignKey: 'authorId',
         as: 'posts'
-    })
+    });
     Post.belongsTo(User, {
         targetKey: 'id',
         foreignKey: 'authorId',
-    })
+    });
 }
 
 
