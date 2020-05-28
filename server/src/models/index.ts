@@ -28,11 +28,7 @@ export const init = (sequelize : Sequelize) => {
             allowNull: false
         },
         password:{
-            type: DataTypes.STRING(15),
-            allowNull: false
-        },
-        salt:{
-            type: DataTypes.STRING(30),
+            type: DataTypes.STRING(20),
             allowNull: false
         }
     },{
@@ -44,14 +40,7 @@ export const init = (sequelize : Sequelize) => {
             {
                 fields: ["email"]
             }
-        ],
-        hooks: {
-            beforeCreate: (user) =>{
-                const salt = bcrypt.genSaltSync();
-                user.password = bcrypt.hashSync(user.password, salt)
-                user.salt = salt
-            }
-        }
+        ]
     });
 
     Post.init({
