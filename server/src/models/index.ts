@@ -30,6 +30,10 @@ export const init = (sequelize : Sequelize) => {
         password:{
             type: DataTypes.STRING(20),
             allowNull: false
+        },
+        role:{
+            type: DataTypes.STRING(20),
+            allowNull: false
         }
     },{
         sequelize,

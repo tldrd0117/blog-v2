@@ -9,7 +9,7 @@ const authService = Container.get(AuthService)
 
 export default (appRouter: Router) => {
     appRouter.use("/auth", router)
-    router.get("/signin", celebrate({
+    router.post("/signin", celebrate({
         [Segments.BODY]: Joi.object({
             email: Joi.string().email().min(10).max(50).required(),
             password: Joi.string().min(4).max(20).required()
@@ -25,7 +25,7 @@ export default (appRouter: Router) => {
     })
 
     router.post("/signup", celebrate({
-        [Segments.BODY]: Joi.object({
+        [Segments.BODY]: Joi.object().keys({
             email: Joi.string().email().min(10).max(50).required(),
             userName: Joi.string().min(4).max(20).required(),
             password: Joi.string().min(4).max(20).required()
@@ -35,5 +35,5 @@ export default (appRouter: Router) => {
         const result = await authService.signUp(user);
         return res.json(result).status(200);
     })
-    router.use(errors());
+    appRouter.use(errors());
 }

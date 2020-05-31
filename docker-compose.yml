@@ -7,7 +7,7 @@ services:
     environment:
       - NODE_ENV=development
     volumes: 
-      - ./server:/usr/src/app
+      - ./server/src:/usr/src/app/src
     ports: 
       - 8080:8080
     depends_on: 

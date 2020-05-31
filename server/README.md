@@ -3,6 +3,12 @@ https://velog.io/@hopsprings2/%EA%B2%AC%EA%B3%A0%ED%95%9C-node.js-%ED%94%84%EB%A
 
 Https : https://webactually.com/2018/11/http%EC%97%90%EC%84%9C-https%EB%A1%9C-%EC%A0%84%ED%99%98%ED%95%98%EA%B8%B0-%EC%9C%84%ED%95%9C-%EC%99%84%EB%B2%BD-%EA%B0%80%EC%9D%B4%EB%93%9C/
 
+argon2 : https://argon2.online/, https://github.com/ranisalt/node-argon2
+dotenv : https://www.npmjs.com/package/dotenv
+jwt: https://jwt.io/
+
+
+
 ##### used framework
 - express
 - typescirpt
