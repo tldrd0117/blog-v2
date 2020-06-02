@@ -19,19 +19,21 @@ import {
 } from "@blueprintjs/core";
 import classNames from 'classnames/bind';
 import styles from "./login.module.scss"
+import { useStore } from "../../stores";
 
 const cx = classNames.bind(styles)
 
-interface LoginState{
+interface SignInState{
     showPassword: Boolean
 }
 
-export default class Login extends Component {
-    state : LoginState = {
+export default class SignIn extends Component {
+    state : SignInState = {
         showPassword: false
     }
     render(){
-        const { showPassword } = this.state as LoginState;
+        const { authStore } = useStore()
+        const { showPassword } = this.state as SignInState;
         const handleLockClick = () => this.setState({ showPassword: !this.state.showPassword });
         const lockButton = (
             <Tooltip content={`${showPassword ? "Hide" : "Show"} Password`} disabled={false}>
@@ -44,6 +46,13 @@ export default class Login extends Component {
                 />
             </Tooltip>
         );
+        const handleSignInClick = () => {
+            authStore.signIn({
+                email: "hello",
+                password: "hello2"
+            })
+        }
+
         return (
             <div className={cx("container")}>
                 <div className={cx("content")}>
@@ -62,7 +71,7 @@ export default class Login extends Component {
                         small={false}
                         type={showPassword ? "text" : "password"}
                     />
-                    <Button className={cx("loginButton")}>로그인</Button>
+                    <Button className={cx("loginButton")} onClick={handleSignInClick}>로그인</Button>
                 </div>
             </div>
         )

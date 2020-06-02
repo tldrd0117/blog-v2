@@ -8,3 +8,4 @@
 mobx : https://mobx.js.org/
 mobx-react : https://mobx-react.js.org/
 atomic design : https://brunch.co.kr/@ultra0034/63
+class-validator : https://github.com/typestack/class-validator
