@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react"
+import React, { Component, useState, Props, ChangeEvent } from "react"
 import {
     Alignment,
     Button,
@@ -20,60 +20,78 @@ import {
 import classNames from 'classnames/bind';
 import styles from "./login.module.scss"
 import { useStore } from "../../stores";
+import { observer, useObserver, useLocalStore } from 'mobx-react'
+import { SignInDto } from "../../models/auth/dto";
+import { validate } from "class-validator";
 
 const cx = classNames.bind(styles)
 
-interface SignInState{
-    showPassword: Boolean
-}
-
-export default class SignIn extends Component {
-    state : SignInState = {
+export default () => {
+    const state = useLocalStore(()=>({
+        email: "",
+        password: "",
         showPassword: false
+    }))
+    const { authStore } = useStore()
+    const handleLockClick = () => {
+        state.showPassword = !state.showPassword
     }
-    render(){
-        const { authStore } = useStore()
-        const { showPassword } = this.state as SignInState;
-        const handleLockClick = () => this.setState({ showPassword: !this.state.showPassword });
-        const lockButton = (
-            <Tooltip content={`${showPassword ? "Hide" : "Show"} Password`} disabled={false}>
-                <Button
-                    disabled={false}
-                    icon={showPassword ? "unlock" : "lock"}
-                    intent={Intent.WARNING}
-                    minimal={true}
-                    onClick={handleLockClick}
-                />
-            </Tooltip>
-        );
-        const handleSignInClick = () => {
-            authStore.signIn({
-                email: "hello",
-                password: "hello2"
-            })
+    const handleSignInClick = async () => {
+        const signInDto = new SignInDto();
+        signInDto.email = state.email
+        signInDto.password = state.password
+        const errors = await validate(signInDto)
+        console.log(errors)
+        if(errors.length>0){
+            alert(errors);
+        } else {
+            authStore.signIn(signInDto)
         }
-
-        return (
-            <div className={cx("container")}>
-                <div className={cx("content")}>
-                    <h2 className={cx("title")}>blog-v2</h2>
-                    <InputGroup
-                        className={cx("id")}
-                        placeholder="아이디"
-                        large={true}
-                    />
-                    <InputGroup
-                        className={cx("passwd")}
-                        disabled={false}
-                        large={true}
-                        placeholder="비밀번호"
-                        rightElement={lockButton}
-                        small={false}
-                        type={showPassword ? "text" : "password"}
-                    />
-                    <Button className={cx("loginButton")} onClick={handleSignInClick}>로그인</Button>
-                </div>
-            </div>
-        )
     }
+
+    const handleEmailChange = ( e: ChangeEvent<HTMLInputElement> ) => {
+        state.email = e.target.value
+    }
+
+    const handlePasswordChange = ( e: ChangeEvent<HTMLInputElement> ) => {
+        state.password = e.target.value
+    }
+
+    const LockButton = (
+        <Tooltip content={`${state.showPassword ? "Hide" : "Show"} Password`} disabled={false}>
+            <Button
+                disabled={false}
+                icon={state.showPassword ? "unlock" : "lock"}
+                intent={Intent.WARNING}
+                minimal={true}
+                onClick={()=>handleLockClick()}
+            />
+        </Tooltip>
+    );
+
+    return useObserver(() => (
+        <div className={cx("container")}>
+            <div className={cx("content")}>
+                <h2 className={cx("title")}>blog-v2</h2>
+                <InputGroup
+                    className={cx("id")}
+                    placeholder="아이디"
+                    large={true}
+                    value={state.email}
+                    onChange={handleEmailChange}
+                />
+                <InputGroup
+                    className={cx("passwd")}
+                    disabled={false}
+                    large={true}
+                    placeholder="비밀번호"
+                    rightElement={LockButton}
+                    type={state.showPassword ? "text" : "password"}
+                    value={state.password}
+                    onChange={handlePasswordChange}
+                />
+                <Button className={cx("loginButton")} onClick={handleSignInClick}>로그인</Button>
+            </div>
+        </div>
+    ))
 }

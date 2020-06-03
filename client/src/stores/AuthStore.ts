@@ -12,7 +12,7 @@ class AuthStore{
     }
     @action
     signIn(signInDto: SignInDto){
-        console.log("signIn");
+        console.log(signInDto);
     }
     @action
     signUp(signUpDto: SignUpDto){
