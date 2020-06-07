@@ -11,7 +11,7 @@ export default (appRouter: Router) => {
     appRouter.use("/auth", router)
     router.post("/signin", celebrate({
         [Segments.BODY]: Joi.object({
-            email: Joi.string().email().min(10).max(50).required(),
+            email: Joi.string().email().min(5).max(50).required(),
             password: Joi.string().min(4).max(20).required()
         })
     }), async function(req: Request, res: Response, next: NextFunction){
@@ -26,7 +26,7 @@ export default (appRouter: Router) => {
 
     router.post("/signup", celebrate({
         [Segments.BODY]: Joi.object().keys({
-            email: Joi.string().email().min(10).max(50).required(),
+            email: Joi.string().email().min(5).max(50).required(),
             username: Joi.string().min(4).max(20).required(),
             password: Joi.string().min(4).max(20).required()
         })

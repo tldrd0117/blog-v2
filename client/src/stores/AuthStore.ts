@@ -2,6 +2,9 @@ import Autobind from 'autobind-decorator'
 import RootStore from './RootStore'
 import { observable, action } from 'mobx'
 import { SignInDto, SignUpDto } from '../models/auth/dto'
+import AuthRepository from '../repository/AuthRepository'
+import { validate } from 'class-validator'
+import { AxiosResponse } from 'axios'
 
 @Autobind
 class AuthStore{
@@ -11,11 +14,19 @@ class AuthStore{
         this.rootStore = rootStore
     }
     @action
-    signIn(signInDto: SignInDto){
-        console.log(signInDto);
+    async signIn(signInDto: SignInDto){
+        const error = await validate(signInDto)
+        if(error.length){
+            console.log(error[0])
+            return;
+        }
+        const res : AxiosResponse = await AuthRepository.sigIn(signInDto)
+        console.log(res.data)
+
     }
     @action
     signUp(signUpDto: SignUpDto){
+        AuthRepository.signUp(signUpDto)
 
     }
 }

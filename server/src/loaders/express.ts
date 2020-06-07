@@ -1,4 +1,4 @@
-import express from "express"
+import express, { Request, Response, NextFunction, Errback } from "express"
 import cors from "cors"
 import path from "path"
 import bodyParser from 'body-parser';
@@ -16,5 +16,14 @@ export default ({ app }:{ app : express.Application }) => {
     app.use(bodyParser.json())
     app.use(express.static(clientUrl))
     app.use(router())
+    app.use(function(err:any, req: Request, res: Response, next: NextFunction){
+        if(err){
+            res.status(500).send({
+                result: false,
+                error: err.message
+            })
+        }
+    })
+    
     return app
 }

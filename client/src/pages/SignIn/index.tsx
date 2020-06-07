@@ -22,7 +22,6 @@ import styles from "./login.module.scss"
 import { useStore } from "../../stores";
 import { observer, useObserver, useLocalStore } from 'mobx-react'
 import { SignInDto } from "../../models/auth/dto";
-import { validate } from "class-validator";
 
 const cx = classNames.bind(styles)
 
@@ -40,13 +39,7 @@ export default () => {
         const signInDto = new SignInDto();
         signInDto.email = state.email
         signInDto.password = state.password
-        const errors = await validate(signInDto)
-        console.log(errors)
-        if(errors.length>0){
-            alert(errors);
-        } else {
-            authStore.signIn(signInDto)
-        }
+        authStore.signIn(signInDto)
     }
 
     const handleEmailChange = ( e: ChangeEvent<HTMLInputElement> ) => {
