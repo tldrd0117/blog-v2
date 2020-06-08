@@ -25,7 +25,7 @@ export default () => {
         state.username = e.target.value
     }
     const handleCompleteClick = async () => {
-        const result = authStore.signUp({
+        const result = await authStore.signUp({
             email: state.email,
             password: state.password,
             username: state.username
