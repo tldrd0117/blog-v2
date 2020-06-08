@@ -18,6 +18,7 @@ export default ({ app }:{ app : express.Application }) => {
     app.use(router())
     app.use(function(err:any, req: Request, res: Response, next: NextFunction){
         if(err){
+            console.log(err.message)
             res.status(500).send({
                 result: false,
                 error: err.message

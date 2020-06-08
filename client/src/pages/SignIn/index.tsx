@@ -18,7 +18,7 @@ import {
     Intent
 } from "@blueprintjs/core";
 import classNames from 'classnames/bind';
-import styles from "./login.module.scss"
+import styles from "./signin.module.scss"
 import { useStore } from "../../stores";
 import { observer, useObserver, useLocalStore } from 'mobx-react'
 import { SignInDto } from "../../models/auth/dto";
@@ -36,10 +36,14 @@ export default () => {
         state.showPassword = !state.showPassword
     }
     const handleSignInClick = async () => {
-        const signInDto = new SignInDto();
-        signInDto.email = state.email
-        signInDto.password = state.password
-        authStore.signIn(signInDto)
+        const result = await authStore.signIn({
+            email: state.email,
+            password: state.password
+        } as SignInDto)
+    }
+    
+    const handleSignUpClick = () => {
+
     }
 
     const handleEmailChange = ( e: ChangeEvent<HTMLInputElement> ) => {
@@ -84,6 +88,7 @@ export default () => {
                     onChange={handlePasswordChange}
                 />
                 <Button className={cx("loginButton")} onClick={handleSignInClick}>로그인</Button>
+                <Button className={cx("signUpButton")} onClick={handleSignUpClick}>회원가입</Button>
             </div>
         </div>
     ))

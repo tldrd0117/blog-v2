@@ -20,8 +20,12 @@ class AuthStore{
             console.log(error[0])
             return;
         }
-        const res : AxiosResponse = await AuthRepository.sigIn(signInDto)
-        console.log(res.data)
+        try{
+            const res : AxiosResponse = await AuthRepository.sigIn(signInDto);
+            console.log(res.data)
+        } catch(e) {
+            console.log(e.response)
+        }
 
     }
     @action

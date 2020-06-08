@@ -5,13 +5,13 @@ class Josa {
     format4 = ["과","와","과/와","과와"]
     get(str:string, target:string){
         if(this.format1.includes(target)){
-            return str + this.hasLast(str)? "을":"를";
+            return str + (this.hasLast(str)? "을":"를");
         } else if(this.format2.includes(target)){
-            return str + this.hasLast(str)? "은":"는";
+            return str + (this.hasLast(str)? "은":"는");
         } else if(this.format3.includes(target)){
-            return str + this.hasLast(str)? "이":"가";
+            return str + (this.hasLast(str)? "이":"가");
         } else if(this.format4.includes(target)){
-            return str + this.hasLast(str)? "과":"와";
+            return str + (this.hasLast(str)? "과":"와");
         } else {
             throw new Error("잘못된 형식");
         }

@@ -7,7 +7,6 @@ import config from '../config';
 @Service()
 export default class AuthService{
     async signIn(email: string, password: string){
-        console.log(email, password)
         try{
             const user = await User.findOne({
                 where: {
@@ -27,7 +26,6 @@ export default class AuthService{
     
             return {user, token}
         } catch(e) {
-            console.log("authService", e)
             throw e;
         }
         
