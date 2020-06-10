@@ -1,19 +1,7 @@
 import React, { Component, useState, Props, ChangeEvent } from "react"
 import {
-    Alignment,
     Button,
-    Classes,
-    H5,
-    Navbar,
-    NavbarDivider,
-    NavbarGroup,
-    NavbarHeading,
-    Switch,
     InputGroup,
-    Icon,
-    Card,
-    Elevation,
-    Position,
     Tooltip,
     Intent
 } from "@blueprintjs/core";
@@ -21,7 +9,8 @@ import classNames from 'classnames/bind';
 import styles from "./signin.module.scss"
 import { useStore } from "../../stores";
 import { observer, useObserver, useLocalStore } from 'mobx-react'
-import { SignInDto } from "../../models/auth/dto";
+import { SigninDto } from "../../models/auth/dto";
+import { useHistory } from "react-router-dom";
 
 const cx = classNames.bind(styles)
 
@@ -32,18 +21,21 @@ export default () => {
         showPassword: false
     }))
     const { authStore } = useStore()
+    const history = useHistory();
     const handleLockClick = () => {
         state.showPassword = !state.showPassword
     }
     const handleSignInClick = async () => {
-        const result = await authStore.signIn({
+        const result = await authStore.signin({
             email: state.email,
             password: state.password
-        } as SignInDto)
+        } as SigninDto)
+        console.log(result)
+        history.goBack()
     }
     
     const handleSignUpClick = () => {
-
+        history.push("/signup")
     }
 
     const handleEmailChange = ( e: ChangeEvent<HTMLInputElement> ) => {
@@ -54,7 +46,7 @@ export default () => {
         state.password = e.target.value
     }
 
-    const LockButton = (
+    const LockButton = () => (
         <Tooltip content={`${state.showPassword ? "Hide" : "Show"} Password`} disabled={false}>
             <Button
                 disabled={false}
@@ -82,13 +74,13 @@ export default () => {
                     disabled={false}
                     large={true}
                     placeholder="비밀번호"
-                    rightElement={LockButton}
+                    rightElement={<LockButton/>}
                     type={state.showPassword ? "text" : "password"}
                     value={state.password}
                     onChange={handlePasswordChange}
                 />
-                <Button className={cx("loginButton")} onClick={handleSignInClick}>로그인</Button>
-                <Button className={cx("signUpButton")} onClick={handleSignUpClick}>회원가입</Button>
+                <Button className={cx("loginButton")} onClick={handleSignInClick}>Sign in</Button>
+                <Button className={cx("signUpButton")} onClick={handleSignUpClick}>Sign up</Button>
             </div>
         </div>
     ))

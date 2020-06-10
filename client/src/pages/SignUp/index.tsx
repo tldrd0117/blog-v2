@@ -1,10 +1,12 @@
 import React, { Component, useState, Props, ChangeEvent } from "react"
 import styles from "./signup.module.scss"
-import classNames from 'classnames'
+import classNames from 'classnames/bind'
 import { observer, useObserver, useLocalStore } from 'mobx-react'
 import { useStore } from "../../stores";
-import { SignUpDto } from "../../models/auth/dto";
+import { SignupDto } from "../../models/auth/dto";
 import { InputGroup, Button } from "@blueprintjs/core";
+import LinkButton from "../../components/LinkButton"
+import { useHistory } from "react-router-dom";
 
 const cx = classNames.bind(styles)
 
@@ -15,6 +17,7 @@ export default () => {
         username: ""
     }))
     const { authStore } = useStore();
+    const history = useHistory();
     const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
         state.email = e.target.value
     }
@@ -25,13 +28,15 @@ export default () => {
         state.username = e.target.value
     }
     const handleCompleteClick = async () => {
-        const result = await authStore.signUp({
+        const result = await authStore.signup({
             email: state.email,
             password: state.password,
             username: state.username
-        } as SignUpDto)
+        } as SignupDto);
+        console.log(result);
+        history.goBack();
     }
-    return(
+    return useObserver(()=>
         <>
             <div className={cx("container")}>
                 <div className={cx("content")}>

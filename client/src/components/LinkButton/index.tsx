@@ -5,7 +5,7 @@ import React, { ReactNode } from "react";
 interface LinkButtonProps{
     path: string,
     children: ReactNode,
-    className: string
+    className: string,
 }
 
 const LinkButton = ({ path, children, className } : LinkButtonProps) => {

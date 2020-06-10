@@ -2,7 +2,7 @@ import {Min, IsEmail, Max, Length, ValidationArguments} from 'class-validator'
 import { lengthMsg, emailFormatMsg } from '../../utils/validationMessage'
 import { useAsObservableSource } from 'mobx-react';
 import { extendObservable } from 'mobx';
-export class SignInDto{
+export class SigninDto{
     @IsEmail(undefined, emailFormatMsg())
     @Length(5,50, lengthMsg("이메일"))
     email: string = "";
@@ -11,7 +11,7 @@ export class SignInDto{
     password: string = "";
 }
 
-export class SignUpDto{
+export class SignupDto{
     @IsEmail(undefined, emailFormatMsg())
     @Length(8,50, lengthMsg("이메일"))
     email: string = "";
