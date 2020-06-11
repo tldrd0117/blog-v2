@@ -1,6 +1,6 @@
 import Autobind from 'autobind-decorator'
 import RootStore from './RootStore'
-import { observable, action } from 'mobx'
+import { observable, action, computed, trace } from 'mobx'
 import { SigninDto, SignupDto } from '../models/auth/dto'
 import AuthRepository from '../repository/AuthRepository'
 import { validate } from 'class-validator'
@@ -11,9 +11,16 @@ import cryptoJs from 'crypto-js';
 @Autobind
 class AuthStore{
     rootStore : RootStore
+    @observable token = ""
     
     constructor(rootStore: RootStore){
         this.rootStore = rootStore
+    }
+
+    @computed
+    get isSignin(){
+        trace(true)
+        return !!this.token
     }
 
     @action
@@ -30,6 +37,7 @@ class AuthStore{
             const res : AxiosResponse = await AuthRepository.signin(signinDto);
             console.log(res.data)
             console.log(jwt.decode(res.data.token));
+            this.token = res.data.token
         } catch(e) {
             console.log(e.response)
         }

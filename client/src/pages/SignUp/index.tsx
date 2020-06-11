@@ -10,7 +10,7 @@ import { useHistory } from "react-router-dom";
 
 const cx = classNames.bind(styles)
 
-export default () => {
+export default observer(() => {
     const state = useLocalStore(()=>({
         email: "",
         password: "",
@@ -36,8 +36,7 @@ export default () => {
         console.log(result);
         history.goBack();
     }
-    return useObserver(()=>
-        <>
+    return (<>
             <div className={cx("container")}>
                 <div className={cx("content")}>
                     <h2 className={cx("title")}>blog-v2</h2>
@@ -65,8 +64,7 @@ export default () => {
                     <Button className={cx("signUpButton")} onClick={handleCompleteClick}>완료</Button>
                 </div>
             </div>
-        </>
-    )
-}
+        </>)
+})
 
 
