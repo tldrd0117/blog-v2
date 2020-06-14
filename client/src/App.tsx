@@ -9,6 +9,7 @@ import {
 import Home from './pages/Home'
 import Signin from './pages/Signin';
 import Signup from './pages/Signup';
+import PostWrite from './templates/PostWrite';
 
 function App() {
   return (
@@ -22,6 +23,9 @@ function App() {
         </Route>
         <Route path="/signup">
           <Signup/>
+        </Route>
+        <Route path="/write">
+          <PostWrite/>
         </Route>
       </Switch>
     </Router>

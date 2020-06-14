@@ -1,12 +1,13 @@
 import Autobind from 'autobind-decorator'
 import RootStore from './RootStore'
-import { observable, action, computed, trace } from 'mobx'
-import { SigninDto, SignupDto } from '../models/auth/dto'
+import { observable, action, computed, trace, autorun } from 'mobx'
+import { SigninDto, SignupDto } from '../models/AuthDto'
 import AuthRepository from '../repository/AuthRepository'
 import { validate } from 'class-validator'
 import { AxiosResponse } from 'axios'
 import jwt from 'jsonwebtoken';
 import cryptoJs from 'crypto-js';
+import PostRepositoty from '../repository/PostRepositoty'
 
 @Autobind
 class AuthStore{
@@ -15,11 +16,15 @@ class AuthStore{
     
     constructor(rootStore: RootStore){
         this.rootStore = rootStore
+        autorun(()=>{
+            console.log("autorun:"+this.token)
+            AuthRepository.token = this.token
+            PostRepositoty.token = this.token
+        })
     }
 
     @computed
     get isSignin(){
-        trace(true)
         return !!this.token
     }
 

@@ -1,7 +1,7 @@
 import { Service } from "typedi";
 import User from "../models/user";
-import { SigninDto, SignupDto, UserTokenDto } from "./dto/AuthDto";
-import DtoFactory from "./dto/DtoFactory";
+import { SigninDto, SignupDto, UserTokenDto } from "../models/dto/AuthDto";
+import DtoFactory from "../models/dto/DtoFactory";
 
 @Service()
 export default class AuthService{

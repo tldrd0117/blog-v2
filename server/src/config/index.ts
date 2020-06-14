@@ -7,5 +7,12 @@ if (envFound.error) {
 }
 
 export default {
-    jwtSecret: process.env.JWT_SECRET as string
+    jwtSecret: process.env.JWT_SECRET as string,
+    host: process.env.host,
+    dialect: process.env.dialect,
+    database: process.env.database,
+    username: process.env.username,
+    password: process.env.password,
+    port: process.env.port
+
 }

@@ -1,4 +1,7 @@
-import isAuth from './isAuth'
+    import isAuth from './isAuth'
+import isValid from './isValid'
+export { isAuth, isValid }
+
 export default {
-    isAuth
+    isAuth, isValid
 }

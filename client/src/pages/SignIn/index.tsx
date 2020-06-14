@@ -9,8 +9,9 @@ import classNames from 'classnames/bind';
 import styles from "./signin.module.scss"
 import { useStore } from "../../stores";
 import { observer, useObserver, useLocalStore } from 'mobx-react'
-import { SigninDto } from "../../models/auth/dto";
+import { SigninDto } from "../../models/AuthDto";
 import { useHistory } from "react-router-dom";
+import InputPassword from "../../componentGroup/InputPassword";
 
 const cx = classNames.bind(styles)
 
@@ -22,9 +23,6 @@ export default () => {
     }))
     const { authStore } = useStore()
     const history = useHistory();
-    const handleLockClick = () => {
-        state.showPassword = !state.showPassword
-    }
     const handleSignInClick = async () => {
         const result = await authStore.signin({
             email: state.email,
@@ -46,18 +44,6 @@ export default () => {
         state.password = e.target.value
     }
 
-    const LockButton = () => (
-        <Tooltip content={`${state.showPassword ? "Hide" : "Show"} Password`} disabled={false}>
-            <Button
-                disabled={false}
-                icon={state.showPassword ? "unlock" : "lock"}
-                intent={Intent.WARNING}
-                minimal={true}
-                onClick={()=>handleLockClick()}
-            />
-        </Tooltip>
-    );
-
     return useObserver(() => (
         <div className={cx("container")}>
             <div className={cx("content")}>
@@ -69,13 +55,9 @@ export default () => {
                     value={state.email}
                     onChange={handleEmailChange}
                 />
-                <InputGroup
+                <InputPassword
+                    placeholder="패스워드"
                     className={cx("passwd")}
-                    disabled={false}
-                    large={true}
-                    placeholder="비밀번호"
-                    rightElement={<LockButton/>}
-                    type={state.showPassword ? "text" : "password"}
                     value={state.password}
                     onChange={handlePasswordChange}
                 />

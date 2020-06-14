@@ -9,8 +9,9 @@ const postService = Container.get(PostService)
 
 export default (appRouter: Router) => {
     appRouter.use("/post", router)
-    router.get("/all", async function(req: Request, res: Response){
-        const result = await postService.getPosts();
+    router.get("/",async function(req: Request, res: Response){
+        const result = {}
+        // const result = await postService.getPosts();
         return res.json(success(result)).status(200);
     })
     router.post("/create", async function(req: Request, res: Response){

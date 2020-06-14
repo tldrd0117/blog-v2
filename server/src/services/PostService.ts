@@ -1,12 +1,13 @@
 
 import { Service, Inject } from "typedi"
 import Post from "../models/post"
+import { PostPageDto } from "../models/dto/PostDto"
 
 @Service()
 export default class PostService{
 
-    async getPosts() : Promise<Post[]> {
-        const result: Post[] = await Post.findAll()
+    async getPosts(postPageDto: PostPageDto) : Promise<Post[]> {
+        const result: Post[] = await Post.findAll({...postPageDto})
         return result
     }
 
