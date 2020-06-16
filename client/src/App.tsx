@@ -9,7 +9,7 @@ import {
 import Home from './pages/Home'
 import Signin from './pages/Signin';
 import Signup from './pages/Signup';
-import PostWrite from './templates/PostWrite';
+import PostWrite from './pages/PostWrite';
 
 function App() {
   return (

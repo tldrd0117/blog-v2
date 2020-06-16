@@ -5,6 +5,10 @@ import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/markdown/markdown'
 import {Button, InputGroup} from '@blueprintjs/core'
 import InputTag from '../../componentGroup/InputTag'
+import style from './postwrite.module.scss'
+import classNames from 'classnames/bind'
+
+const cx = classNames.bind(style);
 
 export default observer(function () {
     let editor : ReactCodeMirror.ReactCodeMirror
@@ -74,7 +78,7 @@ export default observer(function () {
     })
     
     return (
-        <>
+        <div className={cx("template")}>
             <InputGroup id="text-input" placeholder="제목" />
             <InputTag/>
             <Button icon="bold" onClick={onClickBold}>bold</Button>
@@ -100,7 +104,8 @@ export default observer(function () {
                     lineNumbers: true
                 }} 
             />
+            <Button>Complete</Button>
             
-        </>
+        </div>
     )
 })

@@ -13,7 +13,7 @@ interface InputPasswordProps{
     placeholder?: string
 }
 
-export default ({value, onChange, className} : InputPasswordProps) => {
+export default ({value, onChange, className, placeholder} : InputPasswordProps) => {
     const prop = useAsObservableSource({
         value
     })
@@ -39,6 +39,7 @@ export default ({value, onChange, className} : InputPasswordProps) => {
             className={className}
             disabled={false}
             large={true}
+            placeholder={placeholder}
             rightElement={<LockButton/>}
             type={state.showPassword ? "text" : "password"}
             value={prop.value}

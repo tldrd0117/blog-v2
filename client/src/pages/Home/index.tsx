@@ -20,38 +20,21 @@ import classNames from 'classnames/bind';
 import styles from "./home.module.scss"
 import { SuggestExample, ISuggestExampleState } from "../../components/SearchBar"
 import { trace } from "mobx";
-import { observer } from "mobx-react";
+import { observer, useLocalStore } from "mobx-react";
 import { useStore } from "../../stores";
+import TopBar from "../../templates/TopBar";
+import PostList from "../../templates/PostList";
 
 const cx = classNames.bind(styles)
 export default observer (() => {
-    const history = useHistory()
-    const { authStore } = useStore()
-    const handleSignInButtonClick = () => {
-        history.push("/signin")
-    }
+    const state = useLocalStore(()=>({
+        currentComponent: PostList
+    }))
     return (
         <div className={cx("container")}>
             <div className={cx("content")}>
-                <p className={cx("header")}>BLOG-V2</p>
-                {
-                    (!authStore.isSignin)?<Button className={cx("signin")} onClick={handleSignInButtonClick}>SIGN IN</Button>:null
-                }
-                
-                <SuggestExample 
-                    className={cx("search")}
-                    type={"search"}
-                    leftElement={<Icon icon="search" />}
-                    position={Position.TOP}
-                    />
-                <Card 
-                    className={cx("card")}
-                    interactive={true}
-                    elevation={Elevation.TWO}>
-                    <h5><a href="#">Card heading</a></h5>
-                    <p>Card content</p>
-                    <Button>Submit</Button>
-                </Card>
+                <TopBar/>
+                <state.currentComponent/>             
             </div>
         </div>
     )
