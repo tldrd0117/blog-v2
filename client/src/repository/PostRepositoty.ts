@@ -1,14 +1,12 @@
 import axios from './axiosConfig'
+import { PostWriteDto } from '../models/PostDto'
 // import { SigninDto, SignupDto } from '../models/auth/dto'
 class PostRepository{
     BASE_URL='/post'
     token=""
-    // signin(signinDto: SigninDto){
-    //     return axios.post(`${this.BASE_URL}/signin`, signinDto);
-    // }
-    // signup(signupDto: SignupDto){
-    //     return axios.post(`${this.BASE_URL}/signup`, signupDto);
-    // }
+    writePost(postWriteDto: PostWriteDto){
+        return axios.post(`${this.BASE_URL}/signin`, postWriteDto)
+    }
 
 }
 

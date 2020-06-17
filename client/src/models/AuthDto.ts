@@ -22,3 +22,9 @@ export class SignupDto implements Dto{
     @Length(2,20, lengthMsg("이름"))
     public username: string = ""
 }
+
+export type User = {
+    email: string,
+    role: string
+    username: string
+}

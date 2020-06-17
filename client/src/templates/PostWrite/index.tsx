@@ -1,4 +1,4 @@
-import React, { useRef, useLayoutEffect } from 'react'
+import React, { useRef, useLayoutEffect, ChangeEvent } from 'react'
 import { observer, useLocalStore } from 'mobx-react'
 import CodeMirror from 'react-codemirror'
 import 'codemirror/lib/codemirror.css'
@@ -11,10 +11,11 @@ import classNames from 'classnames/bind'
 const cx = classNames.bind(style);
 
 export default observer(function () {
-    let editor : ReactCodeMirror.ReactCodeMirror
     let codemirror : CodeMirror.Editor
     const state = useLocalStore(()=>({
-        code: ""
+        title: "",
+        code: "",
+        tagValues: [] as Array<string>
     }))
     const onChangeCode = (code: string) =>{
         state.code = code
@@ -70,17 +71,29 @@ export default observer(function () {
 
     }
 
-    useLayoutEffect(()=> {
-        if(!codemirror){
+    const onChangeTags = (values : Array<string>) => {
+        state.tagValues = values
+    }
+
+    const onChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
+        state.title = e.target.value
+    }
+
+    const onChangeCodeMirrorRef = (editor: ReactCodeMirror.ReactCodeMirror) => {
+        if(editor){
             codemirror = editor.getCodeMirror()
             codemirror.setSize("100%", "400px")
         }
-    })
+    }
+
+    const onClickComplete = () => {
+        //postWrite
+    }
     
     return (
         <div className={cx("template")}>
-            <InputGroup id="text-input" placeholder="제목" />
-            <InputTag/>
+            <InputGroup id="text-input" placeholder="제목" value={state.title} onChange={onChangeTitle} />
+            <InputTag values={state.tagValues} change={onChangeTags}/>
             <Button icon="bold" onClick={onClickBold}>bold</Button>
             <Button icon="italic" onClick={onClickItalic}>Italic</Button>
             <Button icon="citation" onClick={onClickBlockquote}>Blockquote</Button>
@@ -96,7 +109,7 @@ export default observer(function () {
             }
             <Button onClick={onClickPreview}>Preview</Button>
             <CodeMirror
-                ref={(ref:ReactCodeMirror.ReactCodeMirror)=>{editor=ref}}
+                ref={(ref:ReactCodeMirror.ReactCodeMirror)=>{onChangeCodeMirrorRef(ref)}}
                 value={state.code}
                 onChange={onChangeCode} 
                 options={{
@@ -104,7 +117,7 @@ export default observer(function () {
                     lineNumbers: true
                 }} 
             />
-            <Button>Complete</Button>
+            <Button onClick={onClickComplete}>Complete</Button>
             
         </div>
     )

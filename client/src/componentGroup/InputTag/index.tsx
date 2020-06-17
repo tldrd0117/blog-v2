@@ -2,19 +2,18 @@ import React from 'react'
 import { Button, H5, Intent, ITagProps, Switch, TagInput } from "@blueprintjs/core";
 import { observer, useLocalStore } from "mobx-react";
 
-export default observer(()=>{
-    const state = useLocalStore(()=>({
-        values:[] as React.ReactNode[]
-    }));
+interface InputTagProps{
+    values?:Array<string>
+    change?:Function
+}
 
+export default observer(({values, change}: InputTagProps)=>{
     const handleClear = () => {
-        state.values = []
+        if(change)change(values)
     }
-
     const handleChange = (values: React.ReactNode[]) => {
-        state.values = values
+        if(change) change(values)
     }
-
     const clearButton = (
         <Button
             icon={"cross"}
@@ -27,7 +26,7 @@ export default observer(()=>{
             <TagInput
                 placeholder="태그를 입력해주세요(Enter로 구분)"
                 rightElement={clearButton}
-                values={state.values}
+                values={values}
                 onChange={handleChange}
             />
         </>
