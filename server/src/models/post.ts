@@ -4,7 +4,7 @@ import Comment from './comment';
 
 export default class Post extends Model {
     public id!: number;
-    public authorId!: string;
+    public authorId!: number;
     public title!: string;
     public content!: string;
     public readonly createdAt!: Date;

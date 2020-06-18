@@ -116,8 +116,11 @@ export const init = (sequelize : Sequelize) => {
             type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false
         },
+        authorId:{
+            type: DataTypes.INTEGER.UNSIGNED,
+        },
         content:{
-            type: DataTypes.STRING(200),
+            type: DataTypes.STRING(1000),
             allowNull: false
         }
     },{
@@ -155,6 +158,15 @@ export const init = (sequelize : Sequelize) => {
         as: 'posts'
     });
     Post.belongsTo(User, {
+        targetKey: 'id',
+        foreignKey: 'authorId',
+    });
+    User.hasMany(Comment, {
+        sourceKey:"id",
+        foreignKey: "authorId",
+        as: 'comments'
+    });
+    Comment.belongsTo(User, {
         targetKey: 'id',
         foreignKey: 'authorId',
     });

@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize'
 import { init } from '../models'
+import Container from 'typedi'
 
 export default async () => {
     const sequelize = new Sequelize({
@@ -10,6 +11,7 @@ export default async () => {
         password: "qwer1234",
         port: 3306
     })
+    Container.set("Sequelize", sequelize);
     try{
         await sequelize.authenticate();
         init(sequelize);

@@ -5,7 +5,7 @@ import DtoFactory from "../models/dto/DtoFactory";
 
 @Service()
 export default class AuthService{
-    async signin(signinDto: SigninDto){
+    async signin(signinDto: SigninDto) : Promise<UserTokenDto>{
         try{
             const user = await User.findOne({
                 where: {
@@ -26,7 +26,7 @@ export default class AuthService{
         
     }
 
-    async signup(signupDto: SignupDto){
+    async signup(signupDto: SignupDto) : Promise<UserTokenDto>{
         try{
             const user = await User.findOne({
                 where: {
