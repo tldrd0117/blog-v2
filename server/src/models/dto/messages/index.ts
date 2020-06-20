@@ -12,6 +12,9 @@ export const lengthMsg = (name: string) =>{
         message: (args: ValidationArguments) => {
             const min = args.constraints[0];
             const max = args.constraints[1];
+            if(!args.value){
+                return `${Josa.get(name, "을/를")} 입력해주세요.`
+            }
             if(args.value.length==0)
                 return `${Josa.get(name, "을/를")} 입력해주세요.`
             else if(args.value.length > max )

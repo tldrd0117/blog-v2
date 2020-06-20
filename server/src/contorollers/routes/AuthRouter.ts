@@ -7,9 +7,9 @@ import { SigninDto, SignupDto, UserTokenDto } from "../../models/dto/AuthDto"
 import { isAuth, isValid } from '../middlewares'
 
 const router = Router()
-const authService = Container.get(AuthService)
 
 export default (appRouter: Router) => {
+    const authService = Container.get(AuthService)
     appRouter.use("/auth", router)
     router.post("/signin",
         isValid(SigninDto),

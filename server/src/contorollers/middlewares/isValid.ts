@@ -6,9 +6,10 @@ import { Dto } from "../../models/dto"
 
 export default (dto: Dto) => {
     return async function(req: Request,res: Response, next: NextFunction){
-        const signinDto = DtoFactory.create(dto, req.body);
-        const {isError, errors} = await errorMsg( validate(signinDto) )
-        req.body = signinDto
+        const dtoInstance = DtoFactory.create(dto, req.body);
+        const {isError, errors} = await errorMsg( validate(dtoInstance) )
+        console.log(req.body)
+        req.body = dtoInstance
         console.log(isError, errors, req.body)
         if(isError){
             next(errors)

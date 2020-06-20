@@ -4,7 +4,7 @@ import di from './di'
 import { Application } from "express";
  
 export default async ({ expressApp }:{ expressApp: Application }) => {
-    await expressLoader({ app: expressApp });
     await sequalizeLoader();
+    await expressLoader({ app: expressApp });
     await di();
 }

@@ -1,10 +1,37 @@
+@import "~@blueprintjs/core/lib/scss/variables";
+.topbar-fixed{
+    width: 100%;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    z-index: 10;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid $light-gray1;
+}
+
 .header{
     width: 100%;
     text-align: center;
 }
 
-.signin{
-    width: 80px;
-    height: 22px;
-    align-self: flex-end;
+.searchWrapper{
+    width: 400px;
+    display: flex;
+    align-self: center;
+    position: relative;
+    .search{
+        text-align: center;
+        display: block;
+        position: relative;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .signin{
+        width: 80px;
+        height: 22px;
+        position: absolute;
+        right: 0px;
+    }
 }

@@ -1,8 +1,10 @@
-import axios from './axiosConfig'
+import axios, { axiosWrapper } from './axiosConfig'
 import { SigninDto, SignupDto } from '../models/AuthDto'
 class AuthRepository{
     BASE_URL='/auth'
-    token = ""
+    setToken(token: string){
+        axiosWrapper.token = token
+    }
     signin(signinDto: SigninDto){
         return axios.post(`${this.BASE_URL}/signin`, signinDto);
     }

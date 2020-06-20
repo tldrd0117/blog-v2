@@ -4,19 +4,42 @@ import Post from "../models/post"
 import { PostPageDto, PostDto, PostWriteDto, PostWriteCommentDto } from "../models/dto/PostDto"
 import DtoFactory from "../models/dto/DtoFactory"
 import Tag from "../models/tag"
-import { Sequelize, Transaction } from "sequelize/types"
+import { Sequelize, Transaction } from "sequelize"
 import Comment from "../models/comment"
-
-const sequelize : Sequelize = Container.get("sequalize")
+import User from "../models/user"
+import { UserTokenDto } from "../models/dto/AuthDto"
+import AuthService from "./AuthService"
+import 'reflect-metadata'
+import { stringUtils } from '../utils'
 
 @Service()
 export default class PostService{
 
+    @Inject()
+    authService!: AuthService;
+
+    @Inject("sequelize")
+    sequelize!: Sequelize
+
     async getPosts(postPageDto: PostPageDto) : Promise<PostDto[]> {
         try{
             const { limit, offset } = postPageDto
-            const result: Post[] = await Post.findAll({ limit, offset })
-            return result.map(v=>DtoFactory.create(PostDto, v))
+            const result: Post[] = await Post.findAll({ 
+                limit, 
+                offset,
+                include: [{
+                    model: Comment,
+                    as: 'comments'
+                }, {
+                    model: Tag,
+                    as: 'tags'
+                }]
+            })
+            return result.map(v=>{
+                v.content = stringUtils.removeSymbol(v.content)
+                v.content = v.content.slice(0,300)
+                return DtoFactory.create(PostDto, v)
+            })
         } catch(e) {
             throw e
         }
@@ -35,16 +58,20 @@ export default class PostService{
         }
     }
 
-    async writePost(postWriteDto : PostWriteDto) : Promise<Boolean>{
+    async writePost(postWriteDto : PostWriteDto, token: string) : Promise<Boolean>{
         try{
-            const result = await sequelize.transaction( async (t:Transaction)=>{
-                const { authorId, title, content, tags } = postWriteDto
-                const insertedPost = await Post.create({authorId, title, content}, {transaction:t})
+            const result = await this.sequelize.transaction( async (transaction:Transaction)=>{
+                const { title, content, tags } = postWriteDto
+                console.log("writePorst", "token:"+token)
+                let userTokenDto = DtoFactory.create(UserTokenDto, { token })
+                userTokenDto = this.authService.decodeToken(userTokenDto)
+                const user = await this.authService.getUserIfRegisted(userTokenDto.email, transaction)
+                const insertedPost = await Post.create({authorId: user.id, title, content}, {transaction})
                 if(tags && tags.length>0){
                     await Tag.bulkCreate(tags.map(v=>({
                         postId: insertedPost.id,
                         tagName: v
-                    })), { transaction: t })
+                    })), { transaction })
                 }
                 return true
             })
@@ -54,11 +81,13 @@ export default class PostService{
         }
     }
 
-    async writeComment(postWriteCommentDto: PostWriteCommentDto){
+    async writeComment(postWriteCommentDto: PostWriteCommentDto, token: string){
         try{
-            return await sequelize.transaction( async (t: Transaction)=> {
-                const {authorId, content} = postWriteCommentDto
-                await Comment.create({authorId, content})
+            return await this.sequelize.transaction( async (transaction: Transaction)=> {
+                const { email } = DtoFactory.create(UserTokenDto, { token }).decodeToken();
+                const user = await this.authService.getUserIfRegisted(email, transaction)
+                const {content} = postWriteCommentDto
+                await Comment.create({authorId: user.id, content}, {transaction})
                 return true
             })
         } catch(e) {

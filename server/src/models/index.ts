@@ -5,10 +5,6 @@ import Post from './post';
 import Tag from './tag';
 import Comment from './comment';
 
-export const models = {
-    User, Post, Tag, Comment
-}
-
 export const init = (sequelize : Sequelize) => {
     User.init({
         id:{

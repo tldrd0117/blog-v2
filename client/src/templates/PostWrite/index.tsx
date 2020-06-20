@@ -7,6 +7,8 @@ import {Button, InputGroup} from '@blueprintjs/core'
 import InputTag from '../../componentGroup/InputTag'
 import style from './postwrite.module.scss'
 import classNames from 'classnames/bind'
+import { useStore } from '../../stores'
+import { PostWriteDto } from '../../models/PostDto'
 
 const cx = classNames.bind(style);
 
@@ -17,6 +19,8 @@ export default observer(function () {
         code: "",
         tagValues: [] as Array<string>
     }))
+    const { postStore } = useStore()
+
     const onChangeCode = (code: string) =>{
         state.code = code
     }
@@ -88,6 +92,12 @@ export default observer(function () {
 
     const onClickComplete = () => {
         //postWrite
+        postStore.writePost({
+            title: state.title,
+            content: state.code,
+            tags: state.tagValues
+        } as PostWriteDto)
+
     }
     
     return (

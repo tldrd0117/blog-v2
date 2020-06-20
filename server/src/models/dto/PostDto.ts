@@ -21,24 +21,22 @@ export class PostDto implements Dto{
         each: true,
         ...lengthMsg("태그")
     })
-    public tags!: string[]
+    public tags: string[] = []
     
     @ValidateNested({
         each: true
     })
-    public comments!: CommentDto[]
+    public comments: CommentDto[] = []
 }
 
 export class CommentDto implements Dto {
     @Length(1, 20, lengthMsg("이름"))
     username: string = ""
-    @Length(1, 1000, lengthMsg("내용"))
+    @Length(1, 1000, lengthMsg("답변"))
     content: string = ""
 }
 
 export class PostWriteDto implements Dto{
-    @IsInt()
-    public authorId: number = 0
     @Length(1,200, lengthMsg("제목"))
     public title: string = ""
     @Length(1, 10000, lengthMsg("내용"))
@@ -47,15 +45,13 @@ export class PostWriteDto implements Dto{
         each: true,
         ...lengthMsg("태그")
     })
-    public tags!: string[]
+    public tags: string[] = []
 }
 
 export class PostWriteCommentDto implements Dto{
     @IsInt()
     public postId: number = 0
-    @IsInt()
-    public authorId: number = 0
-    @Length(1, 1000, lengthMsg("답변내용"))
+    @Length(1, 1000, lengthMsg("답변"))
     public content: string = ""
 }
 

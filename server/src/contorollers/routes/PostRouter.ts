@@ -1,29 +1,52 @@
-import { Router, Request, Response } from "express"
+import { Router, Request, Response, NextFunction } from "express"
 import PostService from "../../services/PostService"
 import { Container } from 'typedi'
 import Post from "../../models/post"
 import { success, error } from '../factorys/ResponseFactory'
-import { isValid } from "../middlewares"
-import { PostPageDto, PostWriteDto } from "../../models/dto/PostDto"
+import { isValid, isAuth } from "../middlewares"
+import { PostPageDto, PostWriteDto, PostWriteCommentDto } from "../../models/dto/PostDto"
 
 const router = Router()
-const postService = Container.get(PostService)
 
 export default (appRouter: Router) => {
+    const postService = Container.get(PostService)
     appRouter.use("/post", router)
-    router.post("/", 
+    router.post("/",
         isValid(PostPageDto),
-        async function(req: Request, res: Response){
-            const postPageDto = req.body
-            const result = await postService.getPosts(postPageDto);
-            return res.json(success(result)).status(200);
+        async function(req: Request, res: Response, next: NextFunction){
+            try{
+                const postPageDto = req.body
+                const result = await postService.getPosts(postPageDto);
+                return res.json(success({data:result})).status(200);
+            } catch(e) {
+                next(e)
+            }
         })
-    router.post("/write", 
+    router.post("/write",
+        isAuth,
         isValid(PostWriteDto),
-        async function(req: Request, res: Response){
-            const postWriteDto = req.body
-            const result = await postService.writePost(postWriteDto);
-            return res.json(success({})).status(200);
+        async function(req: Request, res: Response, next: NextFunction){
+            try{
+                const postWriteDto = req.body
+                const token = res.locals.token
+                const result = await postService.writePost(postWriteDto, token);
+                return res.json(success({})).status(200);
+            } catch(e) {
+                next(e)
+            }
+        })
+    router.post("/writeComment",
+        isAuth,
+        isValid(PostWriteCommentDto),
+        async function(req: Request, res: Response, next: NextFunction){
+            try{
+                const postWriteCommentDto : PostWriteCommentDto = req.body
+                const token = res.locals.token
+                const result = await postService.writeComment(postWriteCommentDto, token)
+                return res.json(success({})).status(200);
+            } catch(e) {
+                next(e)
+            }
         })
     router.post("/update", async function(req: Request, res: Response){
         const post = Post.build(req.body)
