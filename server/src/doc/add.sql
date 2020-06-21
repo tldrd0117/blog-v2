@@ -1,0 +1,3 @@
+ALTER TABLE tags ADD FULLTEXT(tagName);
+ALTER TABLE posts ADD FULLTEXT(title);
+ALTER TABLE posts ADD FULLTEXT(content);
