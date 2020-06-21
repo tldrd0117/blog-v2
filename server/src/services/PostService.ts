@@ -4,7 +4,7 @@ import Post from "../models/post"
 import { PostPageDto, PostDto, PostWriteDto, PostWriteCommentDto } from "../models/dto/PostDto"
 import DtoFactory from "../models/dto/DtoFactory"
 import Tag from "../models/tag"
-import { Sequelize, Transaction } from "sequelize"
+import { Sequelize, Transaction, QueryTypes } from "sequelize"
 import Comment from "../models/comment"
 import User from "../models/user"
 import { UserTokenDto } from "../models/dto/AuthDto"
@@ -20,6 +20,19 @@ export default class PostService{
 
     @Inject("sequelize")
     sequelize!: Sequelize
+
+    async searchPosts(word: string){
+        return await Post.sequelize?.query(`
+            (select id, title as same, "title" as type, match(title) against("${word}") as score from posts
+            where match(title) against("${word}"))
+            union
+            (select id, title as same, "content" as type, match(content) against("${word}") as score from posts
+            where match(content) against("${word}"))
+            union
+            (select postId as id, tagName as same, "tagName" as type, match(tagName) against("${word}") as score from tags
+            where match(tagName) against("${word}"))
+            order by score desc`, { type: QueryTypes.SELECT })
+    }
 
     async getPosts(postPageDto: PostPageDto) : Promise<PostDto[]> {
         try{

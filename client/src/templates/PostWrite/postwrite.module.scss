@@ -1,6 +1,27 @@
-.template{
-    width: 600px;
-    align-self: center;
+.writeWrapper{
+    margin-top: 108px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    .title{
+        width: 600px;
+        align-self: center;
+    }
+    .tag{
+        width: 600px;
+        align-self: center;
+    }
+    .buttonWrapper{
+        align-self: center;
+        width: 600px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .codemirror{
+        width: 600px;
+        align-self: center;
+    }
 }
 .signin{
     width: 80px;

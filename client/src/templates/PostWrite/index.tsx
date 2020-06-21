@@ -101,24 +101,27 @@ export default observer(function () {
     }
     
     return (
-        <div className={cx("template")}>
-            <InputGroup id="text-input" placeholder="제목" value={state.title} onChange={onChangeTitle} />
-            <InputTag values={state.tagValues} change={onChangeTags}/>
-            <Button icon="bold" onClick={onClickBold}>bold</Button>
-            <Button icon="italic" onClick={onClickItalic}>Italic</Button>
-            <Button icon="citation" onClick={onClickBlockquote}>Blockquote</Button>
-            <Button icon="list" onClick={onClickList}>List</Button>
-            <Button icon="numbered-list" onClick={onClickOrderedList}>Ordered List</Button>
-            <Button icon="minus" onClick={onClickHorizontalRule}>Horizontal Rule</Button>
-            <Button icon="code" onClick={onClickInlineCode}>Inline Code</Button>
-            <Button icon="code-block" onClick={onClickCodeBlock}>Code Block</Button>
-            {
-                [1,2,3,4,5,6].map(v=>
-                <Button icon="header" onClick={()=>onClickHeading(v)}>Heading {v}</Button>
-                )
-            }
-            <Button onClick={onClickPreview}>Preview</Button>
+        <div className={cx("writeWrapper")}>
+            <InputGroup className={cx("title")} id="text-input" placeholder="제목" value={state.title} onChange={onChangeTitle} />
+            <InputTag className={cx("tag")} values={state.tagValues} change={onChangeTags}/>
+            <div className={cx("buttonWrapper")}>
+                <Button icon="bold" onClick={onClickBold}>bold</Button>
+                <Button icon="italic" onClick={onClickItalic}>Italic</Button>
+                <Button icon="citation" onClick={onClickBlockquote}>Blockquote</Button>
+                <Button icon="list" onClick={onClickList}>List</Button>
+                <Button icon="numbered-list" onClick={onClickOrderedList}>Ordered List</Button>
+                <Button icon="minus" onClick={onClickHorizontalRule}>Horizontal Rule</Button>
+                <Button icon="code" onClick={onClickInlineCode}>Inline Code</Button>
+                <Button icon="code-block" onClick={onClickCodeBlock}>Code Block</Button>
+                {
+                    [1,2,3,4,5,6].map(v=>
+                    <Button icon="header" onClick={()=>onClickHeading(v)}>Heading {v}</Button>
+                    )
+                }
+                <Button onClick={onClickPreview}>Preview</Button>
+            </div>
             <CodeMirror
+                className={cx("codemirror")}
                 ref={(ref:ReactCodeMirror.ReactCodeMirror)=>{onChangeCodeMirrorRef(ref)}}
                 value={state.code}
                 onChange={onChangeCode} 
@@ -127,7 +130,9 @@ export default observer(function () {
                     lineNumbers: true
                 }} 
             />
-            <Button onClick={onClickComplete}>Complete</Button>
+            <div className={cx("buttonWrapper")}>
+                <Button onClick={onClickComplete}>Complete</Button>
+            </div>
             
         </div>
     )

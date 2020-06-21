@@ -65,12 +65,13 @@ export const init = (sequelize : Sequelize) => {
     },{
         sequelize,
         tableName: "posts",
-        engine: "InnoDB",
+        engine: "Mroonga",
         charset: "utf8",
+        comment: 'engine "InnoDB"',
         indexes: [
             {
                 fields: ["id"]
-            }
+            },
         ],
     });
 
@@ -87,12 +88,14 @@ export const init = (sequelize : Sequelize) => {
         },
         tagName:{
             type: DataTypes.STRING(200),
-            allowNull: false
+            allowNull: false,
+            
         }
     },{
         sequelize,
         tableName: "tags",
-        engine: "InnoDB",
+        engine: "Mroonga",
+        comment: 'engine "InnoDB"',
         charset: "utf8",
         indexes: [
             {

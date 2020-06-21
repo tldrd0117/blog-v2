@@ -5,7 +5,7 @@ import style from './topbar.module.scss'
 import classNames from 'classnames/bind'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useStore } from '../../stores'
-import { SuggestExample } from '../../components/SearchBar'
+import SearchBar from '../../components/SearchBar'
 
 const cx = classNames.bind(style)
 
@@ -27,11 +27,10 @@ export default observer(() => {
         <div className={cx("topbar-fixed")}>
             <p className={cx("header")}>BLOG-V2</p>
             <div className={cx("searchWrapper")}>
-                <SuggestExample 
+                <SearchBar 
                     className={cx("search")}
                     type={"search"}
                     leftElement={<Icon icon="search" />}
-                    position={Position.TOP}
                     />
                 {
                     (!authStore.isSignin)?(

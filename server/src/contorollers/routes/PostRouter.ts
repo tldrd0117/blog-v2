@@ -22,6 +22,12 @@ export default (appRouter: Router) => {
                 next(e)
             }
         })
+
+    router.get("/search", async function(req: Request, res: Response, next: NextFunction){
+        const word: string = req.query.word.toString()
+        const result = await postService.searchPosts(word)
+        return res.json(result)
+    })
     router.post("/write",
         isAuth,
         isValid(PostWriteDto),
@@ -35,6 +41,7 @@ export default (appRouter: Router) => {
                 next(e)
             }
         })
+
     router.post("/writeComment",
         isAuth,
         isValid(PostWriteCommentDto),

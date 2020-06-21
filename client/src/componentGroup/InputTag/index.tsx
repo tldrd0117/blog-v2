@@ -7,7 +7,7 @@ interface InputTagProps{
     change?:Function
 }
 
-export default observer(({values, change}: InputTagProps)=>{
+export default observer(({values, change, className}: InputTagProps & { className?: string } )=>{
     const handleClear = () => {
         if(change)change(values)
     }
@@ -24,6 +24,7 @@ export default observer(({values, change}: InputTagProps)=>{
     return (
         <>
             <TagInput
+                className={className}
                 placeholder="태그를 입력해주세요(Enter로 구분)"
                 rightElement={clearButton}
                 values={values}

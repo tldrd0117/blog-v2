@@ -15,6 +15,9 @@ services:
     links: 
       - db:database
   db:
+    build:
+      context: ./mariadb
+      dockerfile: ./Dockerfile
     image: mariadb
     restart: always
     volumes: 
