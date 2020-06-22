@@ -1,5 +1,5 @@
 import { Dto } from './index'
-import { Min, Length, MinLength, ValidateNested, IsInt } from 'class-validator'
+import { Min, Length, MinLength, ValidateNested, IsInt, IsIn } from 'class-validator'
 import { lengthMsg } from './messages'
 
 
@@ -8,6 +8,17 @@ export class PostPageDto implements Dto{
     public limit=0
     @Min(0)
     public offset=0
+}
+
+export class PostSearchDto implements Dto{
+    @Min(1)
+    public limit: number=0
+    @Min(0)
+    public offset: number=0
+    @MinLength(1)
+    public word: string = ""
+    @IsIn(["all","tag","title","content"])
+    public type: string = "all"
 }
 
 export class PostDto implements Dto{

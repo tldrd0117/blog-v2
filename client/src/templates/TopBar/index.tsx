@@ -27,11 +27,7 @@ export default observer(() => {
         <div className={cx("topbar-fixed")}>
             <p className={cx("header")}>BLOG-V2</p>
             <div className={cx("searchWrapper")}>
-                <SearchBar 
-                    className={cx("search")}
-                    type={"search"}
-                    leftElement={<Icon icon="search" />}
-                    />
+                <SearchBar/>
                 {
                     (!authStore.isSignin)?(
                         <Button className={cx("signin")} onClick={handleSignInButtonClick}>Sign in</Button>

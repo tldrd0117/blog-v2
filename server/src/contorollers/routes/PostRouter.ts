@@ -4,7 +4,8 @@ import { Container } from 'typedi'
 import Post from "../../models/post"
 import { success, error } from '../factorys/ResponseFactory'
 import { isValid, isAuth } from "../middlewares"
-import { PostPageDto, PostWriteDto, PostWriteCommentDto } from "../../models/dto/PostDto"
+import { PostPageDto, PostWriteDto, PostWriteCommentDto, PostSearchDto } from "../../models/dto/PostDto"
+import DtoFactory from "../../models/dto/DtoFactory"
 
 const router = Router()
 
@@ -24,8 +25,10 @@ export default (appRouter: Router) => {
         })
 
     router.get("/search", async function(req: Request, res: Response, next: NextFunction){
-        const word: string = req.query.word.toString()
-        const result = await postService.searchPosts(word)
+        const dto: PostSearchDto = DtoFactory.create(PostSearchDto, req.query)
+        dto.limit = Number(dto.limit)
+        dto.offset = Number(dto.offset)
+        const result = await postService.searchPosts(dto)
         return res.json(result)
     })
     router.post("/write",

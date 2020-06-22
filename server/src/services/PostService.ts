@@ -1,10 +1,10 @@
 
 import Container, { Service, Inject } from "typedi"
 import Post from "../models/post"
-import { PostPageDto, PostDto, PostWriteDto, PostWriteCommentDto } from "../models/dto/PostDto"
+import { PostPageDto, PostDto, PostWriteDto, PostWriteCommentDto, PostSearchDto } from "../models/dto/PostDto"
 import DtoFactory from "../models/dto/DtoFactory"
 import Tag from "../models/tag"
-import { Sequelize, Transaction, QueryTypes } from "sequelize"
+import { Sequelize, Transaction, QueryTypes, Op } from "sequelize"
 import Comment from "../models/comment"
 import User from "../models/user"
 import { UserTokenDto } from "../models/dto/AuthDto"
@@ -21,17 +21,64 @@ export default class PostService{
     @Inject("sequelize")
     sequelize!: Sequelize
 
-    async searchPosts(word: string){
-        return await Post.sequelize?.query(`
-            (select id, title as same, "title" as type, match(title) against("${word}") as score from posts
-            where match(title) against("${word}"))
-            union
-            (select id, title as same, "content" as type, match(content) against("${word}") as score from posts
-            where match(content) against("${word}"))
-            union
-            (select postId as id, tagName as same, "tagName" as type, match(tagName) against("${word}") as score from tags
-            where match(tagName) against("${word}"))
-            order by score desc`, { type: QueryTypes.SELECT })
+    async searchPosts(postSearchDto: PostSearchDto){
+        const {limit, offset, word, type} = postSearchDto
+        return await Post.findAll({
+            include: [{
+                model: Comment,
+                as: 'comments',
+                required: false
+            }, {
+                model: Tag,
+                as: 'tags',
+                required: false,
+                
+            }],
+            where: {
+                [Op.and]:[Sequelize.literal(`MATCH(Post.title) AGAINST("${word}")
+                    OR MATCH(Post.content) AGAINST("${word}")
+                    OR MATCH(tags.tagName) AGAINST("${word}")`)]
+            },
+            limit, 
+            offset,
+            subQuery: false,
+            raw: true
+        })
+        // return await Post.sequelize?.query(`
+        // select posts.*, comments.id as 'comments.id'
+        //     , comments.postId as 'comments.postId'
+        //     , comments.authorId as 'comments.authorId'
+        //     , comments.content as 'comments.content'
+        //     , comments.createdAt as 'comments.createdAt'
+        //     , comments.updatedAt as 'comments.updatedAt'
+        //     , tags.id as 'tags.id'
+        //     , tags.postId as 'tags.postId'
+        //     , tags.tagName as 'tags.tagName'
+        //     , tags.createdAt as 'tags.createdAt'
+        //     , tags.updatedAt as 'tags.updatedAt'
+        //     , MATCH(posts.title) AGAINST("${word}") as tscore
+        //     , MATCH(posts.content) AGAINST("${word}") as cscore
+        //     , MATCH(tags.tagName) AGAINST("${word}") as nscore
+        // FROM posts
+        // LEFT JOIN comments ON posts.id = comments.postId
+        // LEFT JOIN tags ON posts.id = tags.postId
+        // WHERE
+        //     MATCH(posts.title) AGAINST("${word}")
+        //     OR MATCH(posts.content) AGAINST("${word}")
+        //     OR MATCH(tags.tagName) AGAINST("${word}")
+        // ORDER BY (tscore + cscore + nscore) DESC
+        // LIMIT ${limit} OFFSET ${offset}
+        // `, { type: QueryTypes.SELECT })
+        // return await Post.sequelize?.query(`
+        //     (select id, title as same, "title" as type, match(title) against("${word}") as score from posts
+        //     where match(title) against("${word}"))
+        //     union
+        //     (select id, title as same, "content" as type, match(content) against("${word}") as score from posts
+        //     where match(content) against("${word}"))
+        //     union
+        //     (select postId as id, tagName as same, "tagName" as type, match(tagName) against("${word}") as score from tags
+        //     where match(tagName) against("${word}"))
+        //     order by score desc`, { type: QueryTypes.SELECT })
     }
 
     async getPosts(postPageDto: PostPageDto) : Promise<PostDto[]> {
