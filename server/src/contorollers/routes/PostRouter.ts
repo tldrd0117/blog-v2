@@ -24,12 +24,16 @@ export default (appRouter: Router) => {
             }
         })
 
-    router.get("/search", async function(req: Request, res: Response, next: NextFunction){
-        const dto: PostSearchDto = DtoFactory.create(PostSearchDto, req.query)
-        dto.limit = Number(dto.limit)
-        dto.offset = Number(dto.offset)
-        const result = await postService.searchPosts(dto)
-        return res.json(result)
+    router.post("/search", 
+        isValid(PostSearchDto),
+        async function(req: Request, res: Response, next: NextFunction){
+        try{
+            const dto: PostSearchDto = req.body
+            const result = await postService.searchPosts(dto)
+            return res.json(result)
+        } catch(e) {
+            next(e)
+        }
     })
     router.post("/write",
         isAuth,

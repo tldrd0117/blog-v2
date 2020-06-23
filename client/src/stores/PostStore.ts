@@ -1,7 +1,7 @@
 import Autobind from 'autobind-decorator'
 import RootStore from './RootStore'
 import { observable, action, computed, trace, autorun } from 'mobx'
-import { PostPageDto, PostWriteDto, PostWriteCommentDto } from '../models/PostDto'
+import { PostPageDto, PostWriteDto, PostWriteCommentDto, PostSearchDto } from '../models/PostDto'
 import AuthRepository from '../repository/AuthRepository'
 import { validate } from 'class-validator'
 import { AxiosResponse } from 'axios'
@@ -14,10 +14,26 @@ import ErrorStore from './ErrorStore'
 class PostStore{
     rootStore : RootStore
     errorStore : ErrorStore
+
+    @observable searchPosts = []
+    @observable searchText = ""
     
     constructor(rootStore: RootStore){
         this.rootStore = rootStore
         this.errorStore = this.rootStore.errorStore
+    }
+
+    @action
+    async searchPost(postSearchDto:PostSearchDto){
+        try{
+            await this.errorStore.validateError(postSearchDto)
+            const res : AxiosResponse = await PostRepositoty.searchPost(postSearchDto)
+            this.searchPosts = res.data
+            // return res.data
+        }catch(e){
+            this.errorStore.handleValidateError(e)
+            this.errorStore.hadnleAxiosError(e)
+        }
     }
 
     @action

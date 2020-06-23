@@ -23,6 +23,7 @@ export default class PostService{
 
     async searchPosts(postSearchDto: PostSearchDto){
         const {limit, offset, word, type} = postSearchDto
+            
         return await Post.findAll({
             include: [{
                 model: Comment,
@@ -35,12 +36,15 @@ export default class PostService{
                 
             }],
             where: {
-                [Op.and]:[Sequelize.literal(`MATCH(Post.title) AGAINST("${word}")
-                    OR MATCH(Post.content) AGAINST("${word}")
-                    OR MATCH(tags.tagName) AGAINST("${word}")`)]
+                [Op.and]:[Sequelize.literal(type.map(v=>(
+                    v=="title"?`MATCH(Post.title) AGAINST("${word}")`:
+                    v=="content"?`MATCH(Post.content) AGAINST("${word}")`:
+                    `MATCH(tags.tagName) AGAINST("${word}")`
+                )).filter(v=>v).join(" OR "))]
             },
             limit, 
             offset,
+            group:["id"],
             subQuery: false,
             raw: true
         })

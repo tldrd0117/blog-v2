@@ -20,6 +20,24 @@ export default observer(() => {
     useEffect(()=>{
         getPosts()
     },[])
+    if(postStore.searchText.length > 0){
+        return (
+            <>
+                <div className={cx("cardWrapper")}>
+                {
+                    postStore.searchPosts?.map((v: any, i)=>(
+                        <PostItem
+                            className={cx("card")}
+                            title={v.title}
+                            content={marked(v.content)}
+                            key={v.id}/>
+                    ))
+                }
+                </div>
+                
+            </>
+        )
+    }
     return (
         <>
             <div className={cx("cardWrapper")}>

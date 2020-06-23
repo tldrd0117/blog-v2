@@ -1,5 +1,5 @@
 import { Dto } from './index'
-import { Min, Length, MinLength, ValidateNested, IsInt, IsIn } from 'class-validator'
+import { Min, Length, MinLength, ValidateNested, IsInt, ArrayContains } from 'class-validator'
 import { lengthMsg } from './messages'
 
 
@@ -15,10 +15,10 @@ export class PostSearchDto implements Dto{
     public limit: number=0
     @Min(0)
     public offset: number=0
-    @MinLength(1)
+    @MinLength(0)
     public word: string = ""
-    @IsIn(["all","tag","title","content"])
-    public type: string = "all"
+    @ArrayContains(["tag","content","title"])
+    public type: string[] = []
 }
 
 export class PostDto implements Dto{
