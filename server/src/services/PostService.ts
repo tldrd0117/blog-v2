@@ -11,6 +11,7 @@ import { UserTokenDto } from "../models/dto/AuthDto"
 import AuthService from "./AuthService"
 import 'reflect-metadata'
 import { stringUtils } from '../utils'
+import * as Hangul from 'hangul-js'; 
 
 @Service()
 export default class PostService{
@@ -22,7 +23,64 @@ export default class PostService{
     sequelize!: Sequelize
 
     async searchPosts(postSearchDto: PostSearchDto){
-        const {limit, offset, word, type} = postSearchDto
+        let {limit, offset, word, type} = postSearchDto
+        let lastWord = word[word.length -1]
+        const disWord = Hangul.disassemble(lastWord)
+        console.log(disWord)
+        if((Hangul.isConsonant(lastWord) || Hangul.isComplete(lastWord))&&disWord.length <4){
+            const jamoMap = {"ㄱ":"가","ㄲ":"까","ㄴ":"나","ㄷ":"다","ㄸ":"따","ㄹ":"라","ㅁ":"마","ㅂ":"바","ㅃ":"빠","ㅅ":"사","ㅆ":"싸","ㅇ":"아","ㅈ":"자","ㅉ":"짜","ㅊ":"차","ㅋ":"카","ㅌ":"타","ㅍ":"파","ㅎ":"하"}
+            var texts = new Array()
+            var targets = new Array()
+            if(disWord.length == 1){
+                if(!Hangul.isConsonant(lastWord)) return;
+                targets.push({
+                    fixed : word.slice(0, word.length-1),
+                    first : jamoMap[lastWord],
+                    last : Hangul.assemble([disWord[0],"ㅣ","ㅎ"])
+                })
+            }
+            if(disWord.length == 2){
+                if(!Hangul.isComplete(lastWord)) return;
+                targets.push({
+                    fixed : word.slice(0, word.length-1), 
+                    first : lastWord,
+                    last : Hangul.assemble([disWord[0],disWord[1],"ㅎ"])
+                })
+            }
+            if(disWord.length == 3){
+                //닮 => ㄷ ㅏ ㄹ ㅁ
+                //왜 => ㅇ ㅗ ㅐ
+                targets.push({
+                    fixed : word.slice(0, word.length-1),
+                    first : lastWord,
+                    last : Hangul.assemble([disWord[0],disWord[1],disWord[2],"ㅎ"])
+                })
+                
+                targets.push({
+                    fixed : word.slice(0, word.length-1) + Hangul.assemble([disWord[0],disWord[1]]),
+                    first : jamoMap[disWord[2]],
+                    last : Hangul.assemble([disWord[2],"ㅣ", "ㅎ"])
+                })
+            }
+            console.log(targets)
+            for(var j = 0; j < targets.length; ++j){
+                console.log(targets[j].first)
+                for(var i = targets[j].first.charCodeAt(0); i <= targets[j].last.charCodeAt(0); ++i){
+                    texts.push(targets[j].fixed + String.fromCharCode(i))
+                }
+            }
+            // if(disWord.length>=2){
+            //     var target = word.slice(0, word.length-2) + Hangul.assemble([disWord[0],disWord[1]])
+            //     const lastDisWord = disWord[disWord.length-1]
+            //     if(disWord.length == 1)
+            //         target += Hangul.assemble([disWord[0],"ㅣ","ㅎ"])
+            //     for(var i = lastWord.charCodeAt(0); i <= target.charCodeAt(0); ++i){
+            //         texts.push(String.fromCharCode(i))
+            //     }
+            // }
+            
+            word = `'${texts.join(" OR ")}' IN BOOLEAN MODE`            
+        }
             
         return await Post.findAll({
             include: [{
@@ -37,9 +95,9 @@ export default class PostService{
             }],
             where: {
                 [Op.and]:[Sequelize.literal(type.map(v=>(
-                    v=="title"?`MATCH(Post.title) AGAINST("${word}")`:
-                    v=="content"?`MATCH(Post.content) AGAINST("${word}")`:
-                    `MATCH(tags.tagName) AGAINST("${word}")`
+                    v=="title"?`MATCH(Post.title) AGAINST(${word})`:
+                    v=="content"?`MATCH(Post.content) AGAINST(${word})`:
+                    `MATCH(tags.tagName) AGAINST(${word})`
                 )).filter(v=>v).join(" OR "))]
             },
             limit, 
