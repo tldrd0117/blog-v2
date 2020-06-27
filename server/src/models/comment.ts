@@ -3,7 +3,7 @@ import { Model } from 'sequelize';
 export default class Comment extends Model {
     public id!: number;
     public postId!: string;
-    public authorId!: string;
+    public authorId!: number;
     public content!: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;

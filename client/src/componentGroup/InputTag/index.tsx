@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, H5, Intent, ITagProps, Switch, TagInput } from "@blueprintjs/core";
+import { Button, H5, Intent, ITagProps, Switch, TagInput, Icon } from "@blueprintjs/core";
 import { observer, useLocalStore } from "mobx-react";
 
 interface InputTagProps{
@@ -24,6 +24,7 @@ export default observer(({values, change, className}: InputTagProps & { classNam
     return (
         <>
             <TagInput
+                leftIcon="tag"
                 className={className}
                 placeholder="태그를 입력해주세요(Enter로 구분)"
                 rightElement={clearButton}

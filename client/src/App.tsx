@@ -10,6 +10,7 @@ import Home from './pages/Home'
 import Signin from './pages/Signin';
 import Signup from './pages/Signup';
 import PostWrite from './pages/PostWrite';
+import PostView from './pages/PostView';
 
 function App() {
   return (
@@ -26,6 +27,9 @@ function App() {
         </Route>
         <Route path="/write">
           <PostWrite/>
+        </Route>
+        <Route path="/view/:postId">
+          <PostView/>
         </Route>
       </Switch>
     </Router>

@@ -2,14 +2,19 @@ import React, { ComponentProps } from 'react'
 import { observer } from 'mobx-react'
 import { Button, Icon, Position, Elevation } from '@blueprintjs/core'
 import style from './topbar.module.scss'
-import classNames from 'classnames/bind'
+import binds from 'classnames/bind'
+import classnames from 'classnames'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useStore } from '../../stores'
 import SearchBar from '../../components/SearchBar'
 
-const cx = classNames.bind(style)
+const cx = binds.bind(style)
 
-export default observer(() => {
+interface TopBarProps{
+    searchBar?: boolean
+}
+
+export default observer(({searchBar = true}: TopBarProps) => {
     const history = useHistory()
     const { authStore } = useStore()
     const handleSignInButtonClick = () => {
@@ -27,8 +32,11 @@ export default observer(() => {
         <div className={cx("topbar-fixed")}>
             <p className={cx("header")}>BLOG-V2</p>
             <div className={cx("searchWrapper")}>
-                <SearchBar/>
-                {
+            {
+                searchBar?<SearchBar/>:null
+            }
+            </div>
+            {
                     (!authStore.isSignin)?(
                         <Button className={cx("signin")} onClick={handleSignInButtonClick}>Sign in</Button>
                     ):
@@ -38,7 +46,6 @@ export default observer(() => {
                         <Button className={cx("signin")} onClick={handleListButtonClick} icon="list"></Button>:null
 
                 }
-            </div>
         </div>
     )
 })

@@ -6,6 +6,7 @@ interface PostItemProps{
     title: string
     content: string
     key: string
+    onClick?: Function
 }
 
 export default (props: PostItemProps) => {
@@ -17,6 +18,7 @@ export default (props: PostItemProps) => {
     }, [ref])
     return (
     <Card
+        onClick={()=>props.onClick?props.onClick() : undefined}
         key={props.key}
         className={props.className}
         interactive={true}

@@ -1,17 +1,17 @@
-import React, { Component } from "react"
+import React from 'react'
 import classNames from 'classnames/bind';
-import styles from "./postwrite.module.scss"
-import { observer, useLocalStore } from "mobx-react";
+import styles from "./postview.module.scss"
+import { observer } from "mobx-react";
 import TopBar from "../../templates/TopBar";
-import PostWrite from "../../templates/PostWrite";
-
+import PostView from "../../templates/PostView";
 const cx = classNames.bind(styles)
-export default observer (() => {
-    return (
+
+export default observer(()=>{
+    return(
         <div className={cx("container")}>
             <div className={cx("content")}>
                 <TopBar searchBar={false}/>
-                <PostWrite/>             
+                <PostView/>             
             </div>
         </div>
     )

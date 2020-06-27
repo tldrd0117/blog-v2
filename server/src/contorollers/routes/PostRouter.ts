@@ -4,7 +4,7 @@ import { Container } from 'typedi'
 import Post from "../../models/post"
 import { success, error } from '../factorys/ResponseFactory'
 import { isValid, isAuth } from "../middlewares"
-import { PostPageDto, PostWriteDto, PostWriteCommentDto, PostSearchDto } from "../../models/dto/PostDto"
+import { PostPageDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto } from "../../models/dto/PostDto"
 import DtoFactory from "../../models/dto/DtoFactory"
 
 const router = Router()
@@ -12,7 +12,19 @@ const router = Router()
 export default (appRouter: Router) => {
     const postService = Container.get(PostService)
     appRouter.use("/post", router)
+
     router.post("/",
+        isValid(PostGetDto),
+        async function(req: Request, res: Response, next: NextFunction){
+            try{
+                const postGetDto = req.body
+                const result = await postService.getPost(postGetDto);
+                return res.json(success({data:result})).status(200);
+            } catch(e) {
+                next(e)
+            }
+        })
+    router.post("/list",
         isValid(PostPageDto),
         async function(req: Request, res: Response, next: NextFunction){
             try{

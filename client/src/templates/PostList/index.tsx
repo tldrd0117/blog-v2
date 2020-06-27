@@ -5,6 +5,7 @@ import styles from "./postlist.module.scss"
 import { useStore } from '../../stores';
 import marked from 'marked'
 import PostItem from '../../componentGroup/postItem'
+import { useHistory } from 'react-router-dom';
 
 const cx = classNames.bind(styles)
 
@@ -13,6 +14,7 @@ export default observer(() => {
         posts: [],
     }))
     const { postStore } = useStore()
+    const history = useHistory()
     const getPosts = async () => {
         const data = await postStore.getPosts({offset:0, limit:20});
         state.posts = data
@@ -20,6 +22,11 @@ export default observer(() => {
     useEffect(()=>{
         getPosts()
     },[])
+
+    const handlePostItemClick = (id: number) => {
+        history.push(`/view/${id}`)
+    }
+
     if(postStore.searchText.length > 0){
         return (
             <>
@@ -27,6 +34,7 @@ export default observer(() => {
                 {
                     postStore.searchPosts?.map((v: any, i)=>(
                         <PostItem
+                            onClick={()=>handlePostItemClick(v.id)}
                             className={cx("card")}
                             title={v.title}
                             content={marked(v.content)}
@@ -44,6 +52,7 @@ export default observer(() => {
             {
                 state.posts?.map((v: any, i)=>(
                     <PostItem
+                        onClick={()=>handlePostItemClick(v.id)}
                         className={cx("card")}
                         title={v.title}
                         content={marked(v.content)}

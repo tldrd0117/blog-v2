@@ -82,7 +82,7 @@ export default class PostService{
             word = `'${texts.join(" OR ")}' IN BOOLEAN MODE`            
         }
             
-        return await Post.findAll({
+        const result =  await Post.findAll({
             include: [{
                 model: Comment,
                 as: 'comments',
@@ -105,6 +105,11 @@ export default class PostService{
             group:["id"],
             subQuery: false,
             raw: true
+        })
+        return result.map(v=>{
+            v.content = stringUtils.removeSymbol(v.content)
+            v.content = v.content.slice(0,300)
+            return v
         })
         // return await Post.sequelize?.query(`
         // select posts.*, comments.id as 'comments.id'
