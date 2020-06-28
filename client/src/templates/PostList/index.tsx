@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useEffect } from 'react'
+import React, { useLayoutEffect, useEffect, ReactPropTypes, ReactComponentElement, HTMLAttributes } from 'react'
 import { observer, useLocalStore } from 'mobx-react'
 import classNames from 'classnames/bind';
 import styles from "./postlist.module.scss"
@@ -9,7 +9,7 @@ import { useHistory } from 'react-router-dom';
 
 const cx = classNames.bind(styles)
 
-export default observer(() => {
+export default observer((props : HTMLAttributes<HTMLElement>) => {
     const state = useLocalStore(()=>({
         posts: [],
     }))
@@ -30,7 +30,7 @@ export default observer(() => {
     if(postStore.searchText.length > 0){
         return (
             <>
-                <div className={cx("cardWrapper")}>
+                <div className={`${cx({"cardWrapper":true})} ${props.className}`}>
                 {
                     postStore.searchPosts?.map((v: any, i)=>(
                         <PostItem
@@ -48,7 +48,7 @@ export default observer(() => {
     }
     return (
         <>
-            <div className={cx("cardWrapper")}>
+            <div className={`${cx({"cardWrapper":true})} ${props.className}`}>
             {
                 state.posts?.map((v: any, i)=>(
                     <PostItem

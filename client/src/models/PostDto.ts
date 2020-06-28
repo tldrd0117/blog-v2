@@ -1,5 +1,5 @@
 import { Dto } from './index'
-import { Min, Length, MinLength, ValidateNested, IsInt, ArrayContains } from 'class-validator'
+import { Min, Length, MinLength, ValidateNested, IsInt, ArrayContains, IsDateString } from 'class-validator'
 import { lengthMsg } from './messages'
 
 export class PostPageDto implements Dto{
@@ -37,6 +37,9 @@ export class PostDto implements Dto{
         ...lengthMsg("태그")
     })
     public tags!: string[]
+
+    @IsDateString()
+    public updatedAt: string = ""
     
     @ValidateNested({
         each: true

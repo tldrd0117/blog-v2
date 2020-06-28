@@ -1,4 +1,4 @@
-import React, { useRef, useLayoutEffect, ChangeEvent } from 'react'
+import React, { useRef, useLayoutEffect, ChangeEvent, HTMLAttributes } from 'react'
 import { observer, useLocalStore } from 'mobx-react'
 import CodeMirror from 'react-codemirror'
 import 'codemirror/lib/codemirror.css'
@@ -12,7 +12,7 @@ import { PostWriteDto } from '../../models/PostDto'
 
 const cx = classNames.bind(style);
 
-export default observer(function () {
+export default observer(function (props : HTMLAttributes<HTMLElement>) {
     let codemirror : CodeMirror.Editor
     const state = useLocalStore(()=>({
         title: "",
@@ -101,7 +101,7 @@ export default observer(function () {
     }
     
     return (
-        <div className={cx("writeWrapper")}>
+        <div className={`${cx("writeWrapper")} ${props.className}`}>
             <InputGroup className={cx("title")} id="text-input" placeholder="제목" value={state.title} onChange={onChangeTitle} />
             <InputTag className={cx("tag")} values={state.tagValues} change={onChangeTags}/>
             <div className={cx("buttonWrapper")}>

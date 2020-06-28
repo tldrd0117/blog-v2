@@ -36,7 +36,7 @@ class PostStore{
         }
     }
 
-    @action.bound
+    @action
     async getPost(postGetDto: PostGetDto){
         try{
             await this.errorStore.validateError(postGetDto)

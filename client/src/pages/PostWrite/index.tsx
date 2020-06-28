@@ -11,7 +11,7 @@ export default observer (() => {
         <div className={cx("container")}>
             <div className={cx("content")}>
                 <TopBar searchBar={false}/>
-                <PostWrite/>             
+                <PostWrite className={"main-content"}/>             
             </div>
         </div>
     )

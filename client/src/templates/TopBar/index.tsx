@@ -31,21 +31,23 @@ export default observer(({searchBar = true}: TopBarProps) => {
     return (
         <div className={cx("topbar-fixed")}>
             <p className={cx("header")}>BLOG-V2</p>
-            <div className={cx("searchWrapper")}>
             {
-                searchBar?<SearchBar/>:null
+                searchBar?(
+                    <div className={cx("searchWrapper")}>
+                        <SearchBar/>
+                    </div>
+                ):null
             }
-            </div>
             {
-                    (!authStore.isSignin)?(
-                        <Button className={cx("signin")} onClick={handleSignInButtonClick}>Sign in</Button>
-                    ):
-                    location.pathname=="/"?
-                        <Button className={cx("signin")} onClick={handleWriteButtonClick} icon="edit"></Button>:
-                    location.pathname=="/write"?
-                        <Button className={cx("signin")} onClick={handleListButtonClick} icon="list"></Button>:null
+                (!authStore.isSignin)?(
+                    <Button className={cx("signin")} onClick={handleSignInButtonClick}>Sign in</Button>
+                ):
+                location.pathname=="/"?
+                    <Button className={cx("signin")} onClick={handleWriteButtonClick} icon="edit"></Button>:
+                location.pathname=="/write"?
+                    <Button className={cx("signin")} onClick={handleListButtonClick} icon="list"></Button>:null
 
-                }
+            }
         </div>
     )
 })

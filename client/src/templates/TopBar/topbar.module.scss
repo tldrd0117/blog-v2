@@ -14,10 +14,13 @@
 .header{
     width: 100%;
     text-align: center;
+    margin: 0px;
+    font-size: 18px;
 }
 
 .searchWrapper{
     width: 400px;
+    margin-top: 20px;
     display: flex;
     align-self: center;
     position: relative;

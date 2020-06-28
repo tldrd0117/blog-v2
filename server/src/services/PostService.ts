@@ -1,7 +1,7 @@
 
 import Container, { Service, Inject } from "typedi"
 import Post from "../models/post"
-import { PostPageDto, PostDto, PostWriteDto, PostWriteCommentDto, PostSearchDto } from "../models/dto/PostDto"
+import { PostPageDto, PostDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto } from "../models/dto/PostDto"
 import DtoFactory from "../models/dto/DtoFactory"
 import Tag from "../models/tag"
 import { Sequelize, Transaction, QueryTypes, Op } from "sequelize"
@@ -12,6 +12,7 @@ import AuthService from "./AuthService"
 import 'reflect-metadata'
 import { stringUtils } from '../utils'
 import * as Hangul from 'hangul-js'; 
+import { userInfo } from "os"
 
 @Service()
 export default class PostService{
@@ -86,12 +87,14 @@ export default class PostService{
             include: [{
                 model: Comment,
                 as: 'comments',
-                required: false
             }, {
                 model: Tag,
                 as: 'tags',
-                required: false,
                 
+            }, {
+                model: User,
+                as: 'user',
+                attributes: ["username"]
             }],
             where: {
                 [Op.and]:[Sequelize.literal(type.map(v=>(
@@ -104,12 +107,13 @@ export default class PostService{
             offset,
             group:["id"],
             subQuery: false,
-            raw: true
         })
-        return result.map(v=>{
+        return result.map((v:any)=>{
+            console.log(v)
             v.content = stringUtils.removeSymbol(v.content)
             v.content = v.content.slice(0,300)
-            return v
+            v.username = v.user?.username
+            return DtoFactory.create(PostDto, v)
         })
         // return await Post.sequelize?.query(`
         // select posts.*, comments.id as 'comments.id'
@@ -160,11 +164,16 @@ export default class PostService{
                 }, {
                     model: Tag,
                     as: 'tags'
+                }, {
+                    model: User,
+                    as: 'user',
+                    attributes: ["username"]
                 }]
             })
-            return result.map(v=>{
+            return result.map((v:any)=>{
                 v.content = stringUtils.removeSymbol(v.content)
-                v.content = v.content.slice(0,300)
+                v.content = v.content.slice(0,300)+(v.content.length>300?"...":"")
+                v.username = v.user?.username
                 return DtoFactory.create(PostDto, v)
             })
         } catch(e) {
@@ -172,13 +181,27 @@ export default class PostService{
         }
     }
 
-    async getPost(postId: number){
+    async getPost(postGetDto: PostGetDto){
         try{
-            const post = await Post.findOne({ 
+            const {postId} = postGetDto
+            const post: any = await Post.findOne({ 
                 where: {
                     id: postId
-                }
+                },
+                include: [{
+                    model: Comment,
+                    as: 'comments'
+                }, {
+                    model: Tag,
+                    as: 'tags'
+                }, {
+                    model: User,
+                    as: 'user',
+                    attributes: ["username"]
+                }]
             })
+            post.username = post?.user?.username
+            console.log(post)
             return DtoFactory.create(PostDto, post || {} )
         } catch(e) {
             throw e
