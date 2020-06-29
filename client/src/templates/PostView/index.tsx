@@ -11,7 +11,6 @@ import { PostDto, PostGetDto } from '../../models/PostDto'
 import marked from 'marked'
 import DtoFactory from '../../models/DtoFactory'
 import moment from 'moment'
-import "moment/locale/ko"
 
 const cx = binds.bind(style)
 
@@ -62,6 +61,7 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
                         className={cx("tag")}
                         key={i}
                         large={true}
+                        minimal={true}
                         interactive={true}
                         >{v.tagName}</Tag>
                     )

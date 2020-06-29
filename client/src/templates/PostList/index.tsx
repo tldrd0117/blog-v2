@@ -30,15 +30,15 @@ export default observer((props : HTMLAttributes<HTMLElement>) => {
     if(postStore.searchText.length > 0){
         return (
             <>
-                <div className={`${cx({"cardWrapper":true})} ${props.className}`}>
+                <div className={`${cx({"itemWrapper":true})} ${props.className}`}>
                 {
                     postStore.searchPosts?.map((v: any, i)=>(
                         <PostItem
                             onClick={()=>handlePostItemClick(v.id)}
-                            className={cx("card")}
-                            title={v.title}
-                            content={marked(v.content)}
-                            key={v.id}/>
+                            className={cx("postItem")}
+                            post={v}
+                            key={i}
+                            />
                     ))
                 }
                 </div>
@@ -48,15 +48,15 @@ export default observer((props : HTMLAttributes<HTMLElement>) => {
     }
     return (
         <>
-            <div className={`${cx({"cardWrapper":true})} ${props.className}`}>
+            <div className={`${cx({"itemWrapper":true})} ${props.className}`}>
             {
                 state.posts?.map((v: any, i)=>(
                     <PostItem
                         onClick={()=>handlePostItemClick(v.id)}
-                        className={cx("card")}
-                        title={v.title}
-                        content={marked(v.content)}
-                        key={v.id}/>
+                        className={cx("postItem")}
+                        post={v}
+                        key={i}
+                        />
                 ))
             }
             </div>

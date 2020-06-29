@@ -1,11 +1,10 @@
-.cardWrapper{
+.itemWrapper{
     display: flex;
     flex-direction: column;
     width: 100%;
-    .card{
-        width: 400px;
-        align-self: center;
-        margin:20px 0px;
+    .postItem{
+        width: 600px;
+        margin: 20px 0px 20px 180px;
         min-width: 400px;
         max-height: 500px;
         text-align: left;
