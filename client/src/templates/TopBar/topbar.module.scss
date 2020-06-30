@@ -9,12 +9,14 @@
     padding-top: 20px;
     padding-bottom: 20px;
     border-bottom: 1px solid $light-gray1;
+    transition: top 0.3s;
 }
 
 .header{
     width: 100%;
-    text-align: center;
+    text-align: left;
     margin: 0px;
+    margin-left: 180px;
     font-size: 18px;
 }
 
@@ -22,9 +24,10 @@
     width: 400px;
     margin-top: 20px;
     display: flex;
-    align-self: center;
+    margin-left: 180px;
+    // align-self: left;
     position: relative;
-    justify-content: center;
+    // justify-content: center;
     
 }
 
