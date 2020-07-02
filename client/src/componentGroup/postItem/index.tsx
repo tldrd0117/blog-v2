@@ -29,7 +29,7 @@ export default (props: PostItemProps&HTMLAttributes<HTMLElement>) => {
                         key={i}
                         minimal={true}
                         >{v.tagName}</Tag>)}
-                <h6 className={`${Classes.HEADING} ${cx('content')}`} ref={contentRef}></h6>
+                <p className={`bp3-text-muted ${cx('content')}`} ref={contentRef}></p>
                 
             </div>
         </>

@@ -7,7 +7,7 @@ import classnames from 'classnames'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useStore } from '../../stores'
 import SearchBar from '../../components/SearchBar'
-import { computed, toJS } from 'mobx'
+import { computed, toJS, reaction } from 'mobx'
 
 const cx = binds.bind(style)
 
@@ -17,10 +17,11 @@ interface TopBarProps{
 
 export default observer(({searchBar = true}: TopBarProps) => {
     const state = useLocalStore(()=>({
-        topbarStyle: {}
+        topbarStyle: {},
+        searchBarStyle: {}
     }))
     const history = useHistory()
-    const { authStore } = useStore()
+    const { authStore, scrollStore } = useStore()
     const topbarRef: Ref<HTMLDivElement>|null = useRef(null)
     const handleSignInButtonClick = () => {
         history.push("/signin")
@@ -31,11 +32,19 @@ export default observer(({searchBar = true}: TopBarProps) => {
     const handleListButtonClick = () => {
         history.push("/")
     }
-    window.onscroll = function(){
-        // console.log("scroll"+window.pageYOffset+" "+state.isTop)
-        // state.isTop = window.pageYOffset == 0
-        state.topbarStyle = window.pageYOffset == 0? {top:"0px"} : {top:"-42px"}
-    }
+
+    const scrollReaction = reaction(
+        ()=>scrollStore.mainScroll,
+        (scrollY)=>{
+        state.topbarStyle = scrollY == 0? {top:"0px", padding:"20px 0px"} : {top:"-42px", padding:"10px 0px"}
+        state.searchBarStyle = scrollY == 0? { large: true }:{ large: false }
+    })
+    // window.onscroll = function(){
+    //     // console.log("scroll"+window.pageYOffset+" "+state.isTop)
+    //     // state.isTop = window.pageYOffset == 0
+    //     state.topbarStyle = window.pageYOffset == 0? {top:"0px", padding:"20px 0px"} : {top:"-42px", padding:"10px 0px"}
+    //     state.searchBarStyle = window.pageYOffset == 0? { large: true }:{ large: false }
+    // }
 
     const location = useLocation()
     console.log(location.pathname)
@@ -45,7 +54,7 @@ export default observer(({searchBar = true}: TopBarProps) => {
             {
                 searchBar?(
                     <div className={cx("searchWrapper")}>
-                        <SearchBar/>
+                        <SearchBar {...state.searchBarStyle}/>
                     </div>
                 ):null
             }

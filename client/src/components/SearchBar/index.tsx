@@ -11,6 +11,7 @@ import { useStore } from "../../stores";
 const cx = classNames.bind(style)
 
 interface SearchBarProps{
+    large?:boolean
 }
 
 export default observer((props: SearchBarProps)=> {
@@ -88,7 +89,7 @@ export default observer((props: SearchBarProps)=> {
                 round={true}
                 fill={true}
                 rightElement={searchOptions}
-                large={true}
+                large={props.large}
                 value={state.value}
                 onChange={handleSearchTextChange}
             />
