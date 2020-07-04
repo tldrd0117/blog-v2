@@ -13,15 +13,15 @@ import Signup from './pages/Signup';
 import PostWrite from './pages/PostWrite';
 import PostView from './pages/PostView';
 import { useStore } from './stores';
-import { debounce } from './utils/debounce';
+import { throttle } from './utils/throttle';
 
 function App() {
   const { scrollStore } = useStore()
   window.onscroll = function(){
-    debounce(()=>{
+    throttle(()=>{
       //throttling 으로 변경 예정
       scrollStore.scroll(window.pageYOffset)
-    }, 30)
+    }, 100)
   }
   return (
     <Router>

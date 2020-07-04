@@ -11,7 +11,7 @@ export default observer (() => {
     return (
         <div className={cx("container")}>
             <div className={cx("content")}>
-                <TopBar/>
+                <TopBar scrollAnimation={true}/>
                 <PostList className={"main-content"}/>       
                 <PostSideBar/>      
             </div>

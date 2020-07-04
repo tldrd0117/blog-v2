@@ -1,8 +1,9 @@
 .sidebar{
-    border: 1px solid black;
+    border: 0px solid black;
     position: fixed;
     top: 124px;
-    left: 830px;
+    left: 930px;
     width: 200px;
     height: 400px;
+    transition: top 0.3s;
 }

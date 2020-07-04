@@ -13,12 +13,13 @@ const cx = binds.bind(style)
 
 interface TopBarProps{
     searchBar?: boolean
+    scrollAnimation?: boolean
 }
 
-export default observer(({searchBar = true}: TopBarProps) => {
+export default observer(({searchBar = true, scrollAnimation = false}: TopBarProps) => {
     const state = useLocalStore(()=>({
-        topbarStyle: {},
-        searchBarStyle: {}
+        topbarStyle: {top:"0px", padding:"20px 0px"},
+        searchBarStyle: { large: true }
     }))
     const history = useHistory()
     const { authStore, scrollStore } = useStore()
@@ -32,13 +33,15 @@ export default observer(({searchBar = true}: TopBarProps) => {
     const handleListButtonClick = () => {
         history.push("/")
     }
+    if(scrollAnimation){
+        reaction(
+            ()=>scrollStore.mainScroll,
+            (scrollY)=>{
+            state.topbarStyle = scrollY == 0? {top:"0px", padding:"20px 0px"} : {top:"-42px", padding:"10px 0px"}
+            state.searchBarStyle = scrollY == 0? { large: true }:{ large: false }
+        })
 
-    const scrollReaction = reaction(
-        ()=>scrollStore.mainScroll,
-        (scrollY)=>{
-        state.topbarStyle = scrollY == 0? {top:"0px", padding:"20px 0px"} : {top:"-42px", padding:"10px 0px"}
-        state.searchBarStyle = scrollY == 0? { large: true }:{ large: false }
-    })
+    }
     // window.onscroll = function(){
     //     // console.log("scroll"+window.pageYOffset+" "+state.isTop)
     //     // state.isTop = window.pageYOffset == 0
