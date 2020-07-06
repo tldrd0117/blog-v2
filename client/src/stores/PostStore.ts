@@ -16,6 +16,7 @@ class PostStore{
     errorStore : ErrorStore
 
     @observable searchPosts = []
+    @observable searchCount = 0
     @observable searchText = ""
     
     constructor(rootStore: RootStore){
@@ -28,7 +29,8 @@ class PostStore{
         try{
             await this.errorStore.validateError(postSearchDto)
             const res : AxiosResponse = await PostRepositoty.searchPost(postSearchDto)
-            this.searchPosts = res.data
+            this.searchPosts = res.data.posts
+            this.searchCount = res.data.count
             // return res.data
         }catch(e){
             this.errorStore.handleValidateError(e)

@@ -77,7 +77,7 @@ export default class PostService{
         }
         
             
-        const result =  await Post.findAll({
+        const { rows, count } =  await Post.findAndCountAll({
             include: [{
                 model: Comment,
                 as: 'comments',
@@ -99,16 +99,20 @@ export default class PostService{
             },
             limit, 
             offset,
+            distinct: true,
             group:["id"],
             subQuery: false,
         })
-        return result.map((v:any)=>{
-            console.log(v)
-            v.content = stringUtils.removeSymbol(v.content)
-            v.content = v.content.slice(0,300)
-            v.username = v.user?.username
-            return DtoFactory.create(PostDto, v)
-        })
+        return {
+            count,
+            posts:rows.map((v:any)=>{
+                console.log(v)
+                v.content = stringUtils.removeSymbol(v.content)
+                v.content = v.content.slice(0,300)
+                v.username = v.user?.username
+                return DtoFactory.create(PostDto, v)
+            })
+        }
         // return await Post.sequelize?.query(`
         // select posts.*, comments.id as 'comments.id'
         //     , comments.postId as 'comments.postId'
@@ -146,12 +150,13 @@ export default class PostService{
         //     order by score desc`, { type: QueryTypes.SELECT })
     }
 
-    async getPosts(postPageDto: PostPageDto) : Promise<PostDto[]> {
+    async getPosts(postPageDto: PostPageDto){
         try{
             const { limit, offset } = postPageDto
-            const result: Post[] = await Post.findAll({ 
+            const { rows, count } = await Post.findAndCountAll({ 
                 limit, 
                 offset,
+                distinct: true,
                 include: [{
                     model: Comment,
                     as: 'comments'
@@ -164,12 +169,15 @@ export default class PostService{
                     attributes: ["username"]
                 }]
             })
-            return result.map((v:any)=>{
-                v.content = stringUtils.removeSymbol(v.content)
-                v.content = v.content.slice(0,300)+(v.content.length>300?"...":"")
-                v.username = v.user?.username
-                return DtoFactory.create(PostDto, v)
-            })
+            return {
+                count,
+                posts: rows.map((v:any)=>{
+                    v.content = stringUtils.removeSymbol(v.content)
+                    v.content = v.content.slice(0,300)+(v.content.length>300?"...":"")
+                    v.username = v.user?.username
+                    return DtoFactory.create(PostDto, v)
+                })
+            }
         } catch(e) {
             throw e
         }

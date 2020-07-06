@@ -6,25 +6,33 @@ import { useStore } from '../../stores';
 import marked from 'marked'
 import PostItem from '../../componentGroup/postItem'
 import { useHistory } from 'react-router-dom';
+import ItemCounter from '../../componentGroup/ItemCounter';
 
 const cx = classNames.bind(styles)
 
 export default observer((props : HTMLAttributes<HTMLElement>) => {
     const state = useLocalStore(()=>({
         posts: [],
+        count: 0,
+        limit: 20
     }))
     const { postStore } = useStore()
     const history = useHistory()
-    const getPosts = async () => {
-        const data = await postStore.getPosts({offset:0, limit:20});
-        state.posts = data
+    const getPosts = async (offset:number) => {
+        const data = await postStore.getPosts({offset, limit:state.limit});
+        state.posts = data.posts
+        state.count = data.count
     }
     useEffect(()=>{
-        getPosts()
+        getPosts(0)
     },[])
 
     const handlePostItemClick = (id: number) => {
         history.push(`/view/${id}`)
+    }
+
+    const onPageChange = (page: number) => {
+        getPosts((page-1)*state.limit)
     }
 
     if(postStore.searchText.length > 0){
@@ -59,6 +67,13 @@ export default observer((props : HTMLAttributes<HTMLElement>) => {
                         />
                 ))
             }
+            <ItemCounter
+                count={state.count}
+                limit={state.limit}
+                page={1}
+                unitLimit={10}
+                onPageChange={onPageChange}
+                />
             </div>
             
         </>
