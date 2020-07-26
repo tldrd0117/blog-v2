@@ -31,7 +31,7 @@ export default observer((props : HTMLAttributes<HTMLElement>) => {
         history.push(`/view/${id}`)
     }
 
-    const onPageChange = (page: number) => {
+    const onPageChange = (page: number) => { 
         getPosts((page-1)*state.limit)
     }
 
