@@ -1,7 +1,7 @@
 import Autobind from 'autobind-decorator'
 import RootStore from './RootStore'
 import { observable, action, computed, trace, autorun } from 'mobx'
-import { PostPageDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto } from '../models/PostDto'
+import { PostPageDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto, PostPlusViewNumberDto } from '../models/PostDto'
 import AuthRepository from '../repository/AuthRepository'
 import { validate } from 'class-validator'
 import { AxiosResponse } from 'axios'
@@ -79,6 +79,18 @@ class PostStore{
         try{
             await this.errorStore.validateError(postWriteCommentDto);
             const res : AxiosResponse = await PostRepositoty.writeComment(postWriteCommentDto);
+            return res.data
+        } catch(e) {
+            this.errorStore.handleValidateError(e)
+            this.errorStore.hadnleAxiosError(e)
+        }
+    }
+
+    @action
+    async updatePostPlusViewNumber(postPlusViewNumberDto: PostPlusViewNumberDto){
+        try{
+            await this.errorStore.validateError(postPlusViewNumberDto);
+            const res : AxiosResponse = await PostRepositoty.updatePostPlusViewNumber(postPlusViewNumberDto);
             return res.data
         } catch(e) {
             this.errorStore.handleValidateError(e)

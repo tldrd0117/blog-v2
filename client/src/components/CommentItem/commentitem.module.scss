@@ -1,0 +1,21 @@
+.wrapper{
+    display: flex;
+    .user{
+        flex: 0 0 auto;
+        margin: 10px;
+        align-self: start;
+        border-radius: 13px;
+    }
+    .contents{
+        word-wrap: break-word;
+        word-break: break-all;
+        padding: 8px;
+        margin: 10px 10px 10px 0px;
+        flex: 1 1 auto;
+        background-color: rgba(138, 155, 168, 0.2);
+        color: #182026;
+        border: none;
+        border-radius: 13px;
+        box-shadow: none;
+    }
+}

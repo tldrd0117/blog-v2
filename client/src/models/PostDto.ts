@@ -25,6 +25,11 @@ export class PostSearchDto implements Dto{
     public type: string[] = []
 }
 
+export class PostPlusViewNumberDto implements Dto{
+    @Min(1)
+    public postId: number = 0
+}
+
 export class PostDto implements Dto{
     @Length(1,20, lengthMsg("이름"))
     public username: string = ""
@@ -40,6 +45,12 @@ export class PostDto implements Dto{
 
     @IsDateString()
     public updatedAt: string = ""
+
+    @Min(0)
+    public view: number = 0
+
+    @Min(0)
+    public commentsLength: number = 0
     
     @ValidateNested({
         each: true

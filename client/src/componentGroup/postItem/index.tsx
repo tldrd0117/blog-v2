@@ -35,9 +35,9 @@ export default (props: PostItemProps&HTMLAttributes<HTMLElement>) => {
                 <p className={cx("username")}>{props.post?.username}</p>
                 <p className={cx("time")}>{moment(props.post?.updatedAt).locale("ko").fromNow()}</p>
                 <div className={cx("indexes")}>
-                    <Tag className={cx("view")} icon="eye-open" minimal={true}>234</Tag>
+                    <Tag className={cx("view")} icon="eye-open" minimal={true}>{props.post?.view}</Tag>
                     {/* <Tag className={cx("thumbs-up")} icon="thumbs-up" minimal={true}>234</Tag> */}
-                    <Tag className={cx("comment")} icon="comment" minimal={true}>234</Tag>
+                <Tag className={cx("comment")} icon="comment" minimal={true}>{props.post?.commentsLength}</Tag>
                 </div>
 
             </div>

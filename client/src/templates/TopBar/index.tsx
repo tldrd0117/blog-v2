@@ -51,6 +51,7 @@ export default observer(({searchBar = true, scrollAnimation = false}: TopBarProp
 
     const location = useLocation()
     console.log(location.pathname)
+    console.log(location.pathname.startsWith("/view"))
     return (
         <div style={toJS(state.topbarStyle)} className={cx("topbar-fixed")}>
             <p className={cx("header")}>BLOG-V2</p>
@@ -61,16 +62,19 @@ export default observer(({searchBar = true, scrollAnimation = false}: TopBarProp
                     </div>
                 ):null
             }
-            {
-                (!authStore.isSignin)?(
-                    <Button className={cx("signin")} onClick={handleSignInButtonClick}>Sign in</Button>
-                ):
-                location.pathname=="/"?
-                    <Button className={cx("signin")} onClick={handleWriteButtonClick} icon="edit"></Button>:
-                location.pathname=="/write"?
+            <div className={cx("buttonWrapper")}>
+                {
+                    (location.pathname=="/write" || location.pathname.startsWith("/view"))?
                     <Button className={cx("signin")} onClick={handleListButtonClick} icon="list"></Button>:null
-
-            }
+                }
+                {
+                    (!authStore.isSignin)?(
+                        <Button className={cx("signin")} onClick={handleSignInButtonClick}>Sign in</Button>
+                    ):
+                    location.pathname=="/"?
+                        <Button className={cx("signin")} onClick={handleWriteButtonClick} icon="edit"></Button>:null
+                }
+            </div>
         </div>
     )
 })

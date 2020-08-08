@@ -11,6 +11,7 @@ import { PostDto, PostGetDto } from '../../models/PostDto'
 import marked from 'marked'
 import DtoFactory from '../../models/DtoFactory'
 import moment from 'moment'
+import Comments from '../../componentGroup/comments'
 
 const cx = binds.bind(style)
 
@@ -23,7 +24,9 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
         content: "",
         tags: [],
         comments: [],
-        updatedAt: ""
+        updatedAt: "",
+        view: 0,
+        commentsLength: 0
     } as PostDto))
     const contentRef: Ref<HTMLParagraphElement>|null = useRef(null)
     const { postStore } = useStore()
@@ -37,6 +40,8 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
         state.tags = data.tags
         state.comments = data.comments
         state.updatedAt = moment(data.updatedAt).locale("ko").fromNow()//.format("YYYY년 M월 D일")
+        state.view = data.view
+        state.commentsLength = data.commentsLength
     }
     useEffect(()=>{
         console.log("current")
@@ -69,6 +74,22 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
                 <p className={cx("postContent")} ref={contentRef}></p>
                 <p>{state.comments}</p>
             </div>
+            <Comments comments={[{
+                username: "hello",
+                contents: "hellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohello"
+            },{
+                username: "hello",
+                contents: "hellohellohellohellohellohellohello\nellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohello"
+            },{
+                username: "hello",
+                contents: "hellohellohellohellohellohellohello\nellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohello"
+            },{
+                username: "hello",
+                contents: "hellohellohellohellohellohellohello\nellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohello"
+            },{
+                username: "hello",
+                contents: "hellohellohellohellohellohellohello\nellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohello"
+            }]} />
         </>
     )
 })

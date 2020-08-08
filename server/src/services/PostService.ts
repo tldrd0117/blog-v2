@@ -110,6 +110,7 @@ export default class PostService{
                 v.content = stringUtils.removeSymbol(v.content)
                 v.content = v.content.slice(0,300)
                 v.username = v.user?.username
+                v.commentsLength = v.comments.length
                 return DtoFactory.create(PostDto, v)
             })
         }
@@ -175,6 +176,7 @@ export default class PostService{
                     v.content = stringUtils.removeSymbol(v.content)
                     v.content = v.content.slice(0,300)+(v.content.length>300?"...":"")
                     v.username = v.user?.username
+                    v.commentsLength = v.comments.length
                     return DtoFactory.create(PostDto, v)
                 })
             }
@@ -245,6 +247,10 @@ export default class PostService{
         } catch(e) {
             throw e
         }
+    }
+
+    async updatePostPlusViewNumber(postId: number){
+        return await Post.increment("view", {where: {id: postId}})
     }
 
     async updatePost(post : Post){

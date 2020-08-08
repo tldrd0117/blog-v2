@@ -14,7 +14,8 @@ export default observer((props : HTMLAttributes<HTMLElement>) => {
     const state = useLocalStore(()=>({
         posts: [],
         count: 0,
-        limit: 20
+        limit: 20,
+        page: 1
     }))
     const { postStore } = useStore()
     const history = useHistory()
@@ -23,21 +24,30 @@ export default observer((props : HTMLAttributes<HTMLElement>) => {
         state.posts = data.posts
         state.count = data.count
     }
+    const updatePostPlusViewNumber = async (postId: number) => {
+        postStore.updatePostPlusViewNumber({
+            postId
+        })
+    }
+
     useEffect(()=>{
         getPosts(0)
     },[])
 
     const handlePostItemClick = (id: number) => {
         history.push(`/view/${id}`)
+        updatePostPlusViewNumber(id);
     }
 
     const onPageChange = (page: number) => { 
         getPosts((page-1)*state.limit)
+        state.page = page
     }
 
-    if(postStore.searchText.length > 0){
-        return (
-            <>
+    return (
+        <>
+            {
+                postStore.searchText.length > 0 ?
                 <div className={`${cx({"itemWrapper":true})} ${props.className}`}>
                 {
                     postStore.searchPosts?.map((v: any, i)=>(
@@ -49,33 +59,28 @@ export default observer((props : HTMLAttributes<HTMLElement>) => {
                             />
                     ))
                 }
+                </div> :
+                <div className={`${cx({"itemWrapper":true})} ${props.className}`}>
+                {
+                    state.posts?.map((v: any, i)=>(
+                        <PostItem
+                            onClick={()=>handlePostItemClick(v.id)}
+                            className={cx("postItem")}
+                            post={v}
+                            key={i}
+                            />
+                    ))
+                }
+                <ItemCounter
+                    count={state.count}
+                    limit={state.limit}
+                    page={state.page}
+                    unitLimit={10}
+                    onPageChange={onPageChange}
+                    />
                 </div>
-                
-            </>
-        )
-    }
-    return (
-        <>
-            <div className={`${cx({"itemWrapper":true})} ${props.className}`}>
-            {
-                state.posts?.map((v: any, i)=>(
-                    <PostItem
-                        onClick={()=>handlePostItemClick(v.id)}
-                        className={cx("postItem")}
-                        post={v}
-                        key={i}
-                        />
-                ))
+
             }
-            <ItemCounter
-                count={state.count}
-                limit={state.limit}
-                page={1}
-                unitLimit={10}
-                onPageChange={onPageChange}
-                />
-            </div>
-            
         </>
     )
 })

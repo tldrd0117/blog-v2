@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { observer, useAsObservableSource } from 'mobx-react'
 import { count } from 'console'
 import { Button } from '@blueprintjs/core'
+import binder from 'classnames/bind'
+import style from './itemcounter.module.scss'
+
+const cx = binder.bind(style)
 
 interface ItemCounterProps{
     count: number
@@ -33,16 +37,20 @@ export default observer((props:ItemCounterProps) => {
         console.log(pageCount)
     }
 
+    const handlePageChange = (page: number) => {
+        props.onPageChange(page)
+    }
+
     return <>
-        <div>
+        <div className={cx("itemCounterWrapper")}>
         {
-            isStartPageUnit?null:<Button onClick={handler}>{"<"}</Button>
+            isStartPageUnit?null:<Button className={cx("itemCounterBtn")} onClick={handler}>{"<"}</Button>
         }
         {
-            elements.map(v=><Button onClick={()=>props.onPageChange(v)}>{v}</Button>)
+            elements.map((v,i)=><Button active={state.page-1==i} className={cx("itemCounterBtn")} onClick={()=>handlePageChange(v)}>{v}</Button>)
         }
         {
-            isEndPageUnit?null:<Button>{">"}</Button>
+            isEndPageUnit?null:<Button className={cx("itemCounterBtn")}>{">"}</Button>
         }
         </div>
     </>

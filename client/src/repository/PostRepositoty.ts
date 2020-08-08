@@ -1,5 +1,5 @@
 import axios from './axiosConfig'
-import { PostWriteDto, PostWriteCommentDto, PostPageDto, PostSearchDto, PostGetDto } from '../models/PostDto'
+import { PostWriteDto, PostWriteCommentDto, PostPageDto, PostSearchDto, PostGetDto, PostPlusViewNumberDto } from '../models/PostDto'
 // import { SigninDto, SignupDto } from '../models/auth/dto'
 class PostRepository{
     BASE_URL='/post'
@@ -18,6 +18,9 @@ class PostRepository{
     }
     writeComment(postWriteCommentDto : PostWriteCommentDto){
         return axios.post(`${this.BASE_URL}/writeCommnet`, postWriteCommentDto)
+    }
+    updatePostPlusViewNumber(postPlusViewNumberDto: PostPlusViewNumberDto){
+        return axios.post(`${this.BASE_URL}/updatePostPlusViewNumber`, postPlusViewNumberDto)
     }
 
 }

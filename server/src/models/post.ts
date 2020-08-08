@@ -8,6 +8,7 @@ export default class Post extends Model {
     public authorId!: number;
     public title!: string;
     public content!: string;
+    public view!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 
@@ -40,6 +41,10 @@ export const initModel = (sequelize: Sequelize) => {
         content:{
             type: DataTypes.TEXT,
             allowNull: false
+        },
+        view:{
+            type: DataTypes.INTEGER.UNSIGNED,
+            defaultValue: 0
         }
     },{
         sequelize,

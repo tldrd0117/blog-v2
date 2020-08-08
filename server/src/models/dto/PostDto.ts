@@ -29,6 +29,11 @@ export class PostSearchDto implements Dto{
     public type: string[] = []
 }
 
+export class PostPlusViewNumberDto implements Dto{
+    @Min(1)
+    public postId: number = 0
+}
+
 export class PostDto implements Dto{
     @Min(1)
     public id: number = 0
@@ -43,6 +48,12 @@ export class PostDto implements Dto{
         ...lengthMsg("태그")
     })
     public tags: string[] = []
+
+    @Min(0)
+    public view: number = 0
+
+    @Min(0)
+    public commentsLength: number = 0
 
     @IsDateString()
     public updatedAt: string = ""
