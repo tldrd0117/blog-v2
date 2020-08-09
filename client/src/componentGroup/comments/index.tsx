@@ -16,6 +16,7 @@ const cx = binder.bind(style)
 
 interface CommentsProps{
     comments: any
+    commentsLength: number
 }
 
 export default observer((props: CommentsProps&HTMLAttributes<HTMLElement>) => {
@@ -85,7 +86,7 @@ export default observer((props: CommentsProps&HTMLAttributes<HTMLElement>) => {
                 ref={commentsRef}
                 className={cx("comments")} 
                 onClick={handleComments}>
-                <H6>Comments</H6>
+                <H6>Comments {props.comments.length}</H6>
                 {
                     state.isShow?<Button onClick={handleClose} className={cx("closeBtn")} minimal={true} icon={"cross"}/>:null
                 }

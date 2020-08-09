@@ -55,7 +55,7 @@ export default observer((props : HTMLAttributes<HTMLElement>) => {
                             onClick={()=>handlePostItemClick(v.id)}
                             className={cx("postItem")}
                             post={v}
-                            key={i}
+                            key={v.id}
                             />
                     ))
                 }
@@ -67,7 +67,7 @@ export default observer((props : HTMLAttributes<HTMLElement>) => {
                             onClick={()=>handlePostItemClick(v.id)}
                             className={cx("postItem")}
                             post={v}
-                            key={i}
+                            key={v.id}
                             />
                     ))
                 }

@@ -63,7 +63,7 @@ export default class PostService{
                         last : Hangul.assemble([disWord[2],"ㅣ", "ㅎ"])
                     })
                 }
-                console.log(targets)
+                // console.log(targets)
                 for(var j = 0; j < targets.length; ++j){
                     console.log(targets[j].first)
                     for(var i = targets[j].first.charCodeAt(0); i <= targets[j].last.charCodeAt(0); ++i){
@@ -73,7 +73,7 @@ export default class PostService{
                 word = `'${texts.join(" OR ")}' IN BOOLEAN MODE`            
             }
         } else {
-            word = `"${word}"`
+            word = `"${word}" IN BOOLEAN MODE`
         }
         
             
@@ -81,32 +81,32 @@ export default class PostService{
             include: [{
                 model: Comment,
                 as: 'comments',
+                separate:true
             }, {
                 model: Tag,
                 as: 'tags',
-                
+                separate:true
             }, {
                 model: User,
                 as: 'user',
-                attributes: ["username"]
+                attributes: ["username"],
             }],
             where: {
-                [Op.and]:[Sequelize.literal(type.map(v=>(
+                [Op.or]:[Sequelize.literal(type.map(v=>(
                     v=="title"?`MATCH(Post.title) AGAINST(${word})`:
                     v=="content"?`MATCH(Post.content) AGAINST(${word})`:
-                    `MATCH(tags.tagName) AGAINST(${word})`
+                    v=="tag"?`Post.id IN (SELECT tags.postId FROM tags WHERE MATCH(tags.tagName) AGAINST(${word}))`:null
                 )).filter(v=>v).join(" OR "))]
             },
             limit, 
             offset,
             distinct: true,
-            group:["id"],
             subQuery: false,
         })
         return {
             count,
             posts:rows.map((v:any)=>{
-                console.log(v)
+                // console.log(v)
                 v.content = stringUtils.removeSymbol(v.content)
                 v.content = v.content.slice(0,300)
                 v.username = v.user?.username
@@ -160,11 +160,12 @@ export default class PostService{
                 distinct: true,
                 include: [{
                     model: Comment,
-                    as: 'comments'
-                    
+                    as: 'comments',
+                    separate:true
                 }, {
                     model: Tag,
-                    as: 'tags'
+                    as: 'tags',
+                    separate:true
                 }, {
                     model: User,
                     as: 'user',
@@ -221,16 +222,22 @@ export default class PostService{
                 }]
             })
             const postResult = post.toJSON()
-            postResult.username = postResult?.user?.username
-            postResult.comments = postResult?.comments?.map((v)=>{
-                v.comments = v.comments?.map((v)=>{
-                    v.username = v?.user?.username
-                    return DtoFactory.create(CommentDto, v || {} )
+            return DtoFactory.create(PostDto, {
+                ...postResult,
+                username: postResult.user.username,
+                comments: postResult?.comments?.map((v)=>{
+                    return DtoFactory.create(CommentDto, {
+                        ...v,
+                        username: v?.user?.username,
+                        comments: v.comments?.map((v)=>{
+                            return DtoFactory.create(CommentDto, {
+                                ...v,
+                                username: v?.user?.username
+                            })
+                        })
+                    })
                 })
-                v.username = v?.user?.username
-                return DtoFactory.create(CommentDto, v || {} )
-            });
-            return DtoFactory.create(PostDto, postResult || {} )
+            })
         } catch(e) {
             throw e
         }

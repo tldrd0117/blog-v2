@@ -1,6 +1,7 @@
 import { Dto } from "./index"
 export default class DtoFactory {
     static create ( cls : Dto, obj : any){
+        if(!obj) obj = {}
         const instance = Reflect.construct(cls as Function, [])
         for(const key in instance){
             let objValue:any = ""

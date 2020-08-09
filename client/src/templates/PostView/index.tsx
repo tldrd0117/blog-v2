@@ -74,7 +74,7 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
                 <p className={cx("postContent")} ref={contentRef}></p>
                 {/* <p>{state.comments}</p> */}
             </div>
-            <Comments comments={state.comments} />
+            <Comments commentsLength={state.commentsLength} comments={state.comments} />
         </>
     )
 })
