@@ -1,5 +1,5 @@
 import { Dto } from './index'
-import { Min, Length, MinLength, ValidateNested, IsInt, IsIn, IsDate, IsDateString } from 'class-validator'
+import { Min, Length, MinLength, ValidateNested, IsInt, IsIn, IsDate, IsDateString, Max } from 'class-validator'
 import { lengthMsg } from './messages'
 
 
@@ -65,10 +65,22 @@ export class PostDto implements Dto{
 }
 
 export class CommentDto implements Dto {
+    @Min(0)
+    id: number = 0
     @Length(1, 20, lengthMsg("이름"))
     username: string = ""
     @Length(1, 1000, lengthMsg("답변"))
     content: string = ""
+    @Min(1)
+    @Max(2)
+    depth: number = 1
+    @Min(0)
+    parentId: number = 0
+    @ValidateNested({
+        each: true
+    })
+    public comments: CommentDto[] = []
+
 }
 
 export class PostWriteDto implements Dto{

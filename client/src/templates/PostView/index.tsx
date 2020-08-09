@@ -72,24 +72,9 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
                     )
                 }
                 <p className={cx("postContent")} ref={contentRef}></p>
-                <p>{state.comments}</p>
+                {/* <p>{state.comments}</p> */}
             </div>
-            <Comments comments={[{
-                username: "hello",
-                contents: "hellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohello"
-            },{
-                username: "hello",
-                contents: "hellohellohellohellohellohellohello\nellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohello"
-            },{
-                username: "hello",
-                contents: "hellohellohellohellohellohellohello\nellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohello"
-            },{
-                username: "hello",
-                contents: "hellohellohellohellohellohellohello\nellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohello"
-            },{
-                username: "hello",
-                contents: "hellohellohellohellohellohellohello\nellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohello"
-            }]} />
+            <Comments comments={state.comments} />
         </>
     )
 })

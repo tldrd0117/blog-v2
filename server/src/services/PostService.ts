@@ -1,7 +1,7 @@
 
 import Container, { Service, Inject } from "typedi"
 import Post from "../models/post"
-import { PostPageDto, PostDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto } from "../models/dto/PostDto"
+import { PostPageDto, PostDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto, CommentDto } from "../models/dto/PostDto"
 import DtoFactory from "../models/dto/DtoFactory"
 import Tag from "../models/tag"
 import { Sequelize, Transaction, QueryTypes, Op } from "sequelize"
@@ -161,6 +161,7 @@ export default class PostService{
                 include: [{
                     model: Comment,
                     as: 'comments'
+                    
                 }, {
                     model: Tag,
                     as: 'tags'
@@ -194,7 +195,22 @@ export default class PostService{
                 },
                 include: [{
                     model: Comment,
-                    as: 'comments'
+                    as: 'comments',
+                    required: false,
+                    where: { parentId: null },
+                    include: [{
+                        model: Comment,
+                        as: "comments",
+                        include:[{
+                            model: User,
+                            as: 'user',
+                            attributes: ["username"]
+                        }]
+                    },{
+                        model: User,
+                        as: 'user',
+                        attributes: ["username"]
+                    }]
                 }, {
                     model: Tag,
                     as: 'tags'
@@ -204,9 +220,17 @@ export default class PostService{
                     attributes: ["username"]
                 }]
             })
-            post.username = post?.user?.username
-            console.log(post)
-            return DtoFactory.create(PostDto, post || {} )
+            const postResult = post.toJSON()
+            postResult.username = postResult?.user?.username
+            postResult.comments = postResult?.comments?.map((v)=>{
+                v.comments = v.comments?.map((v)=>{
+                    v.username = v?.user?.username
+                    return DtoFactory.create(CommentDto, v || {} )
+                })
+                v.username = v?.user?.username
+                return DtoFactory.create(CommentDto, v || {} )
+            });
+            return DtoFactory.create(PostDto, postResult || {} )
         } catch(e) {
             throw e
         }

@@ -7,8 +7,16 @@ export default class Comment extends Model {
     public postId!: string;
     public authorId!: number;
     public content!: string;
+    public depth!: number;
+    public parentId!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
+    public readonly comments?: Comment[];
+    public readonly user?: User;
+
+    public static associations: {
+        comments: Association<Comment, Comment>;
+    }
 }
 
 export const initModel = (sequelize: Sequelize) => {
@@ -29,6 +37,12 @@ export const initModel = (sequelize: Sequelize) => {
         content:{
             type: DataTypes.STRING(1000),
             allowNull: false
+        },
+        depth:{
+            type: DataTypes.INTEGER.UNSIGNED
+        },
+        parentId:{
+            type: DataTypes.INTEGER.UNSIGNED
         }
     },{
         sequelize,
@@ -52,5 +66,16 @@ export const initRelation = () => {
     Comment.belongsTo(User, {
         targetKey: 'id',
         foreignKey: 'authorId',
+        as: 'user'
+    });
+
+    Comment.belongsTo(Comment, {
+        targetKey: 'parentId',
+        foreignKey: 'id',
+    })
+    Comment.hasMany(Comment, {
+        sourceKey: 'id',
+        foreignKey: 'parentId',
+        as: 'comments'
     });
 }

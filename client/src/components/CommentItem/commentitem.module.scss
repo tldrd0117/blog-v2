@@ -6,16 +6,25 @@
         align-self: start;
         border-radius: 13px;
     }
-    .contents{
-        word-wrap: break-word;
-        word-break: break-all;
-        padding: 8px;
-        margin: 10px 10px 10px 0px;
+    .contentsWrapper{
         flex: 1 1 auto;
-        background-color: rgba(138, 155, 168, 0.2);
-        color: #182026;
-        border: none;
-        border-radius: 13px;
-        box-shadow: none;
+        .contents{
+            word-wrap: break-word;
+            word-break: break-all;
+            padding: 8px;
+            margin: 10px 10px 10px 0px;
+            background-color: rgba(138, 155, 168, 0.2);
+            color: #182026;
+            border: none;
+            border-radius: 13px;
+            box-shadow: none;
+        }
+
+    }
+    
+    .replyWrite{
+        margin-top: 8px;
+        color: #2965CC;
+        display: block;
     }
 }

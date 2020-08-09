@@ -7,14 +7,29 @@ import binder from 'classnames/bind'
 const cx = binder.bind(style)
 interface CommentItemProps{
     comment: any
+    onReplyWriteClick?: Function
+    depth?: number
 }
 
-export default observer((props: CommentItemProps)=>{
+export default observer((props: CommentItemProps & React.HTMLAttributes<HTMLElement>)=>{
 
     return <>
         <div className={cx("wrapper")}>
-            <Tag className={cx("user")} large={true} minimal={true} icon={"user"}>{props.comment.username}</Tag>
-            <div className={cx("contents")}>{props.comment.contents}</div>
+            <Tag style={props?.depth==2?{marginLeft:"0px"}:{}} className={cx("user")} large={true} minimal={true} icon={"user"}>{props.comment.username}</Tag>
+            <div className={cx("contentsWrapper")}>
+                <div className={cx("contents")}>{props.comment.content}
+                    {
+                        props.onReplyWriteClick?
+                        <Button onClick={()=>props.onReplyWriteClick?props.onReplyWriteClick(props.comment):null} className={cx("replyWrite")}>댓글쓰기</Button>
+                        :null
+                    }
+                    
+                </div>
+                {
+                    props.children
+                }
+            </div>
         </div>
+        
     </>
 })
