@@ -25,58 +25,8 @@ export default class PostService{
 
     async searchPosts(postSearchDto: PostSearchDto){
         let {limit, offset, word, type} = postSearchDto
-        let lastWord = word[word.length -1]
-        if(Hangul.isConsonant(lastWord) || Hangul.isComplete(lastWord)){
-            const disWord = Hangul.disassemble(lastWord)
-            if(disWord.length <4){
-                const jamoMap = {"ㄱ":"가","ㄲ":"까","ㄴ":"나","ㄷ":"다","ㄸ":"따","ㄹ":"라","ㅁ":"마","ㅂ":"바","ㅃ":"빠","ㅅ":"사","ㅆ":"싸","ㅇ":"아","ㅈ":"자","ㅉ":"짜","ㅊ":"차","ㅋ":"카","ㅌ":"타","ㅍ":"파","ㅎ":"하"}
-                var texts = new Array()
-                var targets = new Array()
-                if(disWord.length == 1){
-                    if(!Hangul.isConsonant(lastWord)) return;
-                    targets.push({
-                        fixed : word.slice(0, word.length-1),
-                        first : jamoMap[lastWord],
-                        last : Hangul.assemble([disWord[0],"ㅣ","ㅎ"])
-                    })
-                }
-                if(disWord.length == 2){
-                    if(!Hangul.isComplete(lastWord)) return;
-                    targets.push({
-                        fixed : word.slice(0, word.length-1), 
-                        first : lastWord,
-                        last : Hangul.assemble([disWord[0],disWord[1],"ㅎ"])
-                    })
-                }
-                if(disWord.length == 3){
-                    //닮 => ㄷ ㅏ ㄹ ㅁ
-                    //왜 => ㅇ ㅗ ㅐ
-                    targets.push({
-                        fixed : word.slice(0, word.length-1),
-                        first : lastWord,
-                        last : Hangul.assemble([disWord[0],disWord[1],disWord[2],"ㅎ"])
-                    })
-                    
-                    targets.push({
-                        fixed : word.slice(0, word.length-1) + Hangul.assemble([disWord[0],disWord[1]]),
-                        first : jamoMap[disWord[2]],
-                        last : Hangul.assemble([disWord[2],"ㅣ", "ㅎ"])
-                    })
-                }
-                // console.log(targets)
-                for(var j = 0; j < targets.length; ++j){
-                    console.log(targets[j].first)
-                    for(var i = targets[j].first.charCodeAt(0); i <= targets[j].last.charCodeAt(0); ++i){
-                        texts.push(targets[j].fixed + String.fromCharCode(i))
-                    }
-                }
-                word = `'${texts.join(" OR ")}' IN BOOLEAN MODE`            
-            }
-        } else {
-            word = `"${word}" IN BOOLEAN MODE`
-        }
-        
-            
+        const jamoWord = stringUtils.predictJamo(word)
+        const searchTargetWords = `"${jamoWord?.join(" OR ")}" IN BOOLEAN MODE`
         const { rows, count } =  await Post.findAndCountAll({
             include: [{
                 model: Comment,
@@ -93,9 +43,9 @@ export default class PostService{
             }],
             where: {
                 [Op.or]:[Sequelize.literal(type.map(v=>(
-                    v=="title"?`MATCH(Post.title) AGAINST(${word})`:
-                    v=="content"?`MATCH(Post.content) AGAINST(${word})`:
-                    v=="tag"?`Post.id IN (SELECT tags.postId FROM tags WHERE MATCH(tags.tagName) AGAINST(${word}))`:null
+                    v=="title"?`MATCH(Post.title) AGAINST(${searchTargetWords})`:
+                    v=="content"?`MATCH(Post.content) AGAINST(${searchTargetWords})`:
+                    v=="tag"?`Post.id IN (SELECT tags.postId FROM tags WHERE MATCH(tags.tagName) AGAINST(${searchTargetWords}))`:null
                 )).filter(v=>v).join(" OR "))]
             },
             limit, 
@@ -106,7 +56,7 @@ export default class PostService{
         return {
             count,
             posts:rows.map((v:any)=>{
-                // console.log(v)
+                console.log(v)
                 v.content = stringUtils.removeSymbol(v.content)
                 v.content = v.content.slice(0,300)
                 v.username = v.user?.username
@@ -225,6 +175,7 @@ export default class PostService{
             return DtoFactory.create(PostDto, {
                 ...postResult,
                 username: postResult.user.username,
+                commentsLength: postResult?.comments.length,    
                 comments: postResult?.comments?.map((v)=>{
                     return DtoFactory.create(CommentDto, {
                         ...v,
@@ -241,6 +192,10 @@ export default class PostService{
         } catch(e) {
             throw e
         }
+    }
+
+    async getAllTags(){
+        
     }
 
     async writePost(postWriteDto : PostWriteDto, token: string) : Promise<Boolean>{
@@ -269,10 +224,10 @@ export default class PostService{
     async writeComment(postWriteCommentDto: PostWriteCommentDto, token: string){
         try{
             return await this.sequelize.transaction( async (transaction: Transaction)=> {
-                const { email } = DtoFactory.create(UserTokenDto, { token }).decodeToken();
-                const user = await this.authService.getUserIfRegisted(email, transaction)
-                const {content} = postWriteCommentDto
-                await Comment.create({authorId: user.id, content}, {transaction})
+                let userTokenDto = DtoFactory.create(UserTokenDto, { token })
+                userTokenDto = this.authService.decodeToken(userTokenDto)
+                const user = await this.authService.getUserIfRegisted(userTokenDto.email, transaction)
+                await Comment.create({authorId: user.id, ...postWriteCommentDto}, {transaction})
                 return true
             })
         } catch(e) {

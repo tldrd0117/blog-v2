@@ -17,39 +17,37 @@ const cx = binds.bind(style)
 
 export default observer((props: HTMLAttributes<HTMLElement>)=>{
     const { postId } = useParams()
-    
-    const state = useLocalStore(()=>({
-        username: "",
-        title: "",
-        content: "",
-        tags: [],
-        comments: [],
-        updatedAt: "",
-        view: 0,
-        commentsLength: 0
-    } as PostDto))
+    // const state = useLocalStore(()=>({
+    //     username: "",
+    //     title: "",
+    //     content: "",
+    //     tags: [],
+    //     comments: [],
+    //     updatedAt: "",
+    //     view: 0,
+    //     commentsLength: 0
+    // } as PostDto))
     const contentRef: Ref<HTMLParagraphElement>|null = useRef(null)
-    const { postStore } = useStore()
+    const { postStore ,postStore: { currentPost } } = useStore()
     const getPost = async () => {
-        const dto = DtoFactory.create(PostGetDto, {postId})
-        const data: PostDto = await postStore.getPost(dto)
+        const data: PostDto = await postStore.getPost({postId})
         console.log(data)
-        state.username = data.username
-        state.title = data.title
-        state.content = data.content
-        state.tags = data.tags
-        state.comments = data.comments
-        state.updatedAt = moment(data.updatedAt).locale("ko").fromNow()//.format("YYYY년 M월 D일")
-        state.view = data.view
-        state.commentsLength = data.commentsLength
+        // state.username = data.username
+        // state.title = data.title
+        // state.content = data.content
+        // state.tags = data.tags
+        // state.comments = data.comments
+        // state.updatedAt = moment(data.updatedAt).locale("ko").fromNow()//.format("YYYY년 M월 D일")
+        // state.view = data.view
+        // state.commentsLength = data.commentsLength
     }
     useEffect(()=>{
         console.log("current")
-        if(contentRef.current){
-            contentRef.current.innerHTML = marked(state.content)
-            console.log(marked(state.content))
+        if(contentRef.current && currentPost.content){
+            contentRef.current.innerHTML = marked(currentPost.content)
+            console.log(marked(currentPost.content))
         }
-    }, [state.content])
+    }, [currentPost.content])
     useEffect( () => {
         getPost()
     },[])
@@ -57,11 +55,11 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
     return(
         <>
             <div className={`${props.className} ${cx("content")}`}>
-                <H1>{state.title}</H1>
-                <p>{state.username}</p>
-                <p>{state.updatedAt}</p>
+                <H1>{currentPost.title}</H1>
+                <p>{currentPost.username}</p>
+                <p>{moment(currentPost.updatedAt).locale("ko").fromNow()}</p>
                 {
-                    state.tags.map((v:any, i: number)=>
+                    currentPost.tags?.map((v:any, i: number)=>
                     <Tag
                         className={cx("tag")}
                         key={i}
@@ -74,7 +72,7 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
                 <p className={cx("postContent")} ref={contentRef}></p>
                 {/* <p>{state.comments}</p> */}
             </div>
-            <Comments commentsLength={state.commentsLength} comments={state.comments} />
+            <Comments commentsLength={currentPost.commentsLength} comments={currentPost.comments} />
         </>
     )
 })

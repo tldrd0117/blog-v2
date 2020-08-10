@@ -17,7 +17,7 @@ class PostRepository{
         return axios.post(`${this.BASE_URL}/write`, postWriteDto)
     }
     writeComment(postWriteCommentDto : PostWriteCommentDto){
-        return axios.post(`${this.BASE_URL}/writeCommnet`, postWriteCommentDto)
+        return axios.post(`${this.BASE_URL}/writeComment`, postWriteCommentDto)
     }
     updatePostPlusViewNumber(postPlusViewNumberDto: PostPlusViewNumberDto){
         return axios.post(`${this.BASE_URL}/updatePostPlusViewNumber`, postPlusViewNumberDto)

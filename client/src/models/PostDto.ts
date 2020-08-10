@@ -80,9 +80,11 @@ export class PostWriteDto implements Dto{
 export class PostWriteCommentDto implements Dto{
     @IsInt()
     public postId: number = 0
-    @IsInt()
-    public authorId: number = 0
     @Length(1, 1000, lengthMsg("답변"))
     public content: string = ""
+    @IsInt()
+    public parentId: number = -1
+    @IsInt()
+    public depth: number = 1
 }
 
