@@ -1,7 +1,8 @@
 import { Model, Association, DataTypes, Sequelize } from 'sequelize';
-import Tag from './tag';
+import PostTag from './postTag';
 import Comment from './comment';
 import User from './user'
+import Tag from './tag';
 
 export default class Post extends Model {
     public id!: number;
@@ -63,10 +64,11 @@ export const initModel = (sequelize: Sequelize) => {
 
 export const initRelation = () => {
 
-    Post.hasMany(Tag, {
-        sourceKey: 'id',
+    Post.belongsToMany(Tag, {
+        through: PostTag,
+        as: "tags",
         foreignKey: 'postId',
-        as: 'tags'
+        otherKey: 'tagId'
     });
 
     Post.hasMany(Comment, {

@@ -83,6 +83,11 @@ export class CommentDto implements Dto {
 
 }
 
+export class TagAllDto implements Dto {
+    @Min(1)
+    limit: number = 1
+}
+
 export class PostWriteDto implements Dto{
     @Length(1,200, lengthMsg("제목"))
     public title: string = ""

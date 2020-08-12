@@ -3,9 +3,10 @@ import { Container } from "typedi";
 
 class Models{
     Post=import("./post")
-    Tag=import("./tag")
+    PostTag=import("./postTag")
     User=import("./user")
     Comment=import("./comment")
+    Tag=import("./tag")
 }
 
 export const models = new Models()

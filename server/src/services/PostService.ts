@@ -1,9 +1,9 @@
 
 import Container, { Service, Inject } from "typedi"
 import Post from "../models/post"
-import { PostPageDto, PostDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto, CommentDto } from "../models/dto/PostDto"
+import { PostPageDto, PostDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto, CommentDto, TagAllDto } from "../models/dto/PostDto"
 import DtoFactory from "../models/dto/DtoFactory"
-import Tag from "../models/tag"
+import PostTag from "../models/postTag"
 import { Sequelize, Transaction, QueryTypes, Op } from "sequelize"
 import Comment from "../models/comment"
 import User from "../models/user"
@@ -13,6 +13,7 @@ import 'reflect-metadata'
 import { stringUtils } from '../utils'
 import * as Hangul from 'hangul-js'; 
 import { userInfo } from "os"
+import Tag from "../models/tag"
 
 @Service()
 export default class PostService{
@@ -35,7 +36,6 @@ export default class PostService{
             }, {
                 model: Tag,
                 as: 'tags',
-                separate:true
             }, {
                 model: User,
                 as: 'user',
@@ -115,7 +115,6 @@ export default class PostService{
                 }, {
                     model: Tag,
                     as: 'tags',
-                    separate:true
                 }, {
                     model: User,
                     as: 'user',
@@ -194,8 +193,19 @@ export default class PostService{
         }
     }
 
-    async getAllTags(){
-        
+    async getAllTags(tagAllDto: TagAllDto){
+        const { limit } = tagAllDto
+        const tags = await Tag.findAll({
+            limit,
+            attributes:{
+                include:[
+                    "(searchCount + viewCount) as count"
+                ]
+            },
+            order: [
+                ["count", "desc"]
+            ]
+        })
     }
 
     async writePost(postWriteDto : PostWriteDto, token: string) : Promise<Boolean>{
@@ -206,13 +216,28 @@ export default class PostService{
                 let userTokenDto = DtoFactory.create(UserTokenDto, { token })
                 userTokenDto = this.authService.decodeToken(userTokenDto)
                 const user = await this.authService.getUserIfRegisted(userTokenDto.email, transaction)
-                const insertedPost = await Post.create({authorId: user.id, title, content}, {transaction})
-                if(tags && tags.length>0){
-                    await Tag.bulkCreate(tags.map(v=>({
-                        postId: insertedPost.id,
-                        tagName: v
-                    })), { transaction })
-                }
+                const insertedPost = await Post.create({
+                    authorId: user.id, 
+                    title, 
+                    content,
+                    tags: tags.map(v=>({
+                        tagName: v,
+                        viewCount: 0,
+                        searchCount: 0
+                    }))
+                }, {
+                    include: [{
+                        model: Tag,
+                        as: "tags"
+                    }],
+                    transaction
+                })
+                // if(tags && tags.length>0){
+                //     await PostTag.bulkCreate(tags.map(v=>({
+                //         postId: insertedPost.id,
+                //         tagName: v
+                //     })), { transaction })
+                // }
                 return true
             })
             return result

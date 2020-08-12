@@ -1,10 +1,12 @@
 import { Model, Association, DataTypes, Sequelize } from 'sequelize';
 import Post from './post'
+import PostTag from './postTag';
 
 export default class Tag extends Model {
     public id!: number;
-    public postId!: number;
     public tagName!: string;
+    public viewCount!: number;
+    public searchCount!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 
@@ -19,15 +21,18 @@ export const initModel = (sequelize: Sequelize) => {
             primaryKey: true,
             allowNull: false
         },
-        postId:{
-            type: DataTypes.INTEGER.UNSIGNED,
-            allowNull: false
-        },
         tagName:{
             type: DataTypes.STRING(200),
             allowNull: false,
-            
-        }
+        },
+        viewCount:{
+            type: DataTypes.INTEGER.UNSIGNED,
+            allowNull: false
+        },
+        searchCount:{
+            type: DataTypes.INTEGER.UNSIGNED,
+            allowNull: false
+        },
     },{
         sequelize,
         tableName: "tags",
@@ -44,8 +49,14 @@ export const initModel = (sequelize: Sequelize) => {
 }
 
 export const initRelation = () => {
-    Tag.belongsTo(Post, {
-        targetKey: 'id',
-        foreignKey: 'postId'
-    });
+    Tag.belongsToMany(Post, {
+        through: PostTag,
+        foreignKey: 'tagId',
+        otherKey: 'postId'
+    })
+    // Tag.hasMany(PostTag, {
+    //     sourceKey: 'id',
+    //     foreignKey: 'tagId',
+    //     as: 'postTags'
+    // });
 }
