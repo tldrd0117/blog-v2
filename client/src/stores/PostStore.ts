@@ -1,7 +1,7 @@
 import Autobind from 'autobind-decorator'
 import RootStore from './RootStore'
 import { observable, action, computed, trace, autorun } from 'mobx'
-import { PostPageDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto, PostPlusViewNumberDto, PostDto } from '../models/PostDto'
+import { PostPageDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto, PostPlusViewNumberDto, PostDto, TagAllDto } from '../models/PostDto'
 import AuthRepository from '../repository/AuthRepository'
 import { validate } from 'class-validator'
 import { AxiosResponse } from 'axios'
@@ -19,6 +19,7 @@ class PostStore{
     @observable searchCount = 0
     @observable searchText = ""
     @observable currentPost: any = {}
+    @observable tags: any = []
     
     constructor(rootStore: RootStore){
         this.rootStore = rootStore
@@ -94,6 +95,19 @@ class PostStore{
             await this.errorStore.validateError(postPlusViewNumberDto);
             const res : AxiosResponse = await PostRepositoty.updatePostPlusViewNumber(postPlusViewNumberDto);
             return res.data
+        } catch(e) {
+            this.errorStore.handleValidateError(e)
+            this.errorStore.hadnleAxiosError(e)
+        }
+    }
+
+    @action
+    async getAllTags(tagAllDto: TagAllDto){
+        try{
+            await this.errorStore.validateError(tagAllDto);
+            const res : AxiosResponse = await PostRepositoty.getAllTags(tagAllDto);
+            this.tags = res.data.data
+            return res.data.data
         } catch(e) {
             this.errorStore.handleValidateError(e)
             this.errorStore.hadnleAxiosError(e)

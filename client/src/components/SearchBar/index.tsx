@@ -4,7 +4,7 @@ import { observer, useLocalStore } from "mobx-react";
 import { MenuItem, Position, Icon, InputGroup, Popover, Menu, Button, MenuDivider } from "@blueprintjs/core";
 import classNames from 'classnames/bind'
 import style from './searchbar.module.scss'
-import { values } from "mobx";
+import { values, reaction } from "mobx";
 import { debounce } from "../../utils/debounce";
 import { useStore } from "../../stores";
 
@@ -38,6 +38,10 @@ export default observer((props: SearchBarProps)=> {
             })
         },300)
     }
+    reaction(()=>postStore.searchText,
+    ()=>{
+        state.value = postStore.searchText
+    })
 
     const handleSearchTextChange = (e : ChangeEvent<HTMLInputElement>) => {
         state.value = e.target.value

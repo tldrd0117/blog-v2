@@ -50,8 +50,6 @@ export default observer(({searchBar = true, scrollAnimation = false}: TopBarProp
     // }
 
     const location = useLocation()
-    console.log(location.pathname)
-    console.log(location.pathname.startsWith("/view"))
     return (
         <div style={toJS(state.topbarStyle)} className={cx("topbar-fixed")}>
             <p className={cx("header")}>BLOG-V2</p>

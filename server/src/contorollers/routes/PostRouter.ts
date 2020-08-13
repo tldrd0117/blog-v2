@@ -4,7 +4,7 @@ import { Container } from 'typedi'
 import Post from "../../models/post"
 import { success, error } from '../factorys/ResponseFactory'
 import { isValid, isAuth } from "../middlewares"
-import { PostPageDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto, PostPlusViewNumberDto } from "../../models/dto/PostDto"
+import { PostPageDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto, PostPlusViewNumberDto, TagAllDto } from "../../models/dto/PostDto"
 import DtoFactory from "../../models/dto/DtoFactory"
 
 const router = Router()
@@ -81,6 +81,17 @@ export default (appRouter: Router) => {
                 const postPlusViewNumberDto : PostPlusViewNumberDto = req.body
                 const result = await postService.updatePostPlusViewNumber(postPlusViewNumberDto.postId);
                 return res.json(success({})).status(200);
+            } catch(e) {
+                next(e)
+            }
+        })
+    router.post("/getAllTags",
+        isValid(TagAllDto),
+        async function(req: Request, res: Response, next: NextFunction){
+            try{
+                const tagAllDto : TagAllDto = req.body
+                const result = await postService.getAllTags(tagAllDto);
+                return res.json(success({data: result})).status(200);
             } catch(e) {
                 next(e)
             }

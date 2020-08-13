@@ -45,7 +45,7 @@ export default class PostService{
                 [Op.or]:[Sequelize.literal(type.map(v=>(
                     v=="title"?`MATCH(Post.title) AGAINST(${searchTargetWords})`:
                     v=="content"?`MATCH(Post.content) AGAINST(${searchTargetWords})`:
-                    v=="tag"?`Post.id IN (SELECT tags.postId FROM tags WHERE MATCH(tags.tagName) AGAINST(${searchTargetWords}))`:null
+                    v=="tag"?`Post.id IN (SELECT postTags.postId FROM tags, postTags WHERE tags.id=postTags.tagId AND MATCH(tags.tagName) AGAINST(${searchTargetWords}))`:null
                 )).filter(v=>v).join(" OR "))]
             },
             limit, 
@@ -199,13 +199,14 @@ export default class PostService{
             limit,
             attributes:{
                 include:[
-                    "(searchCount + viewCount) as count"
+                    [Sequelize.literal("(searchCount + viewCount)"),"count"]
                 ]
             },
             order: [
-                ["count", "desc"]
+                [Sequelize.literal("count"), "desc"]
             ]
         })
+        return tags
     }
 
     async writePost(postWriteDto : PostWriteDto, token: string) : Promise<Boolean>{

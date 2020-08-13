@@ -77,6 +77,11 @@ export class PostWriteDto implements Dto{
     public tags!: string[]
 }
 
+export class TagAllDto implements Dto {
+    @Min(1)
+    limit: number = 1
+}
+
 export class PostWriteCommentDto implements Dto{
     @IsInt()
     public postId: number = 0
