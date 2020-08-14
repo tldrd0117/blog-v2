@@ -26,6 +26,7 @@ export default class PostService{
 
     async searchPosts(postSearchDto: PostSearchDto){
         let {limit, offset, word, type} = postSearchDto
+        await this.updateTagNameViewCount(word)
         const jamoWord = stringUtils.predictJamo(word)
         const searchTargetWords = `"${jamoWord?.join(" OR ")}" IN BOOLEAN MODE`
         const { rows, count } =  await Post.findAndCountAll({
@@ -99,6 +100,13 @@ export default class PostService{
         //     (select postId as id, tagName as same, "tagName" as type, match(tagName) against("${word}") as score from tags
         //     where match(tagName) against("${word}"))
         //     order by score desc`, { type: QueryTypes.SELECT })
+    }
+
+    async updateTagNameViewCount(word: string){
+        if(!Hangul.isComplete(word)){
+            return;
+        }
+        await Tag.increment("searchCount", {where: {tagName: word}})
     }
 
     async getPosts(postPageDto: PostPageDto){
@@ -262,7 +270,12 @@ export default class PostService{
     }
 
     async updatePostPlusViewNumber(postId: number){
-        return await Post.increment("view", {where: {id: postId}})
+        await Post.increment("view", {where: {id: postId}})
+        return await Tag.increment("viewCount", {
+            where:{
+                [Op.or]:[Sequelize.literal(`id IN (SELECT tagId from postTags where postId=${postId})`)]
+            }
+        })
     }
 
     async updatePost(post : Post){

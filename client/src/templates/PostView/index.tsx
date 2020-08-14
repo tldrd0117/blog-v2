@@ -12,8 +12,23 @@ import marked from 'marked'
 import DtoFactory from '../../models/DtoFactory'
 import moment from 'moment'
 import Comments from '../../componentGroup/comments'
+import CodeMirror from 'codemirror'
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/mode/markdown/markdown'
+import 'codemirror/mode/javascript/javascript'
 
 const cx = binds.bind(style)
+
+marked.setOptions({
+    highlight: function(code, lang) {
+        // const first: HTMLTextAreaElement = document.getElementById("first") as HTMLTextAreaElement
+        // CodeMirror.fromTextArea( first,{
+        // })
+        return `<textArea id="codes">${code}</textArea>`
+        // require('pygmentize-bundled') ({ lang: lang, format: 'html' }, code, function (err, result) {
+        // });
+    }
+});
 
 export default observer((props: HTMLAttributes<HTMLElement>)=>{
     const { postId } = useParams()
@@ -46,6 +61,16 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
         if(contentRef.current && currentPost.content){
             contentRef.current.innerHTML = marked(currentPost.content)
             console.log(marked(currentPost.content))
+
+            const first: HTMLTextAreaElement = document.getElementById("codes") as HTMLTextAreaElement
+            if(first){
+                const codemirror = CodeMirror.fromTextArea( first,{
+                    lineNumbers: true,
+                    mode: "javascript"
+                })
+                codemirror.setSize("100%","auto");
+
+            }
         }
     }, [currentPost.content])
     useEffect( () => {
