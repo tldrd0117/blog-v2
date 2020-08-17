@@ -1,4 +1,4 @@
-@import "~@blueprintjs/core/lib/scss/variables";
+@import "../../styles/media.scss";
 .topbar-fixed{
     width: 100%;
     position: fixed;
@@ -6,7 +6,7 @@
     flex-direction: column;
     background-color: white;
     z-index: 10;
-    border-bottom: 1px solid $light-gray1;
+    // border-bottom: 1px solid $light-gray1;
     transition: top 0.3s;
 }
 
@@ -25,9 +25,7 @@
     margin-top: 20px;
     display: flex;
     margin-left: 180px;
-    // align-self: left;
     position: relative;
-    // justify-content: center;
     
 }
 
@@ -40,5 +38,25 @@
         height: 22px;
         margin-left: 16px;
         position: relative;
+    }
+}
+
+@include mobile{
+    .header{
+        margin-left: 20px;
+    }
+    .searchWrapper{
+        width: calc(100% - 40px);
+        margin-left: 20px;
+    }
+}
+
+@include tablet{
+    .header{
+        margin-left: 80px;
+    }
+    .searchWrapper{
+        // width: calc(100% - 40px);
+        margin-left: 80px;
     }
 }

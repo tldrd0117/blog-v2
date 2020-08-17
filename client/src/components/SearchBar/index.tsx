@@ -6,7 +6,7 @@ import classNames from 'classnames/bind'
 import style from './searchbar.module.scss'
 import { values, reaction } from "mobx";
 import { debounce } from "../../utils/debounce";
-import { useStore } from "../../stores";
+import { useStore } from "../../hooks";
 
 const cx = classNames.bind(style)
 

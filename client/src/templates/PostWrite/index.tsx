@@ -7,7 +7,7 @@ import {Button, InputGroup} from '@blueprintjs/core'
 import InputTag from '../../componentGroup/InputTag'
 import style from './postwrite.module.scss'
 import classNames from 'classnames/bind'
-import { useStore } from '../../stores'
+import { useStore } from '../../hooks';
 import { PostWriteDto } from '../../models/PostDto'
 
 const cx = classNames.bind(style);

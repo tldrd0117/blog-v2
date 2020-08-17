@@ -1,8 +1,8 @@
 
 
-export const throttle = (function(){
+export const throttle = function(callback: Function, time: number){
     let throttleCheck = false
-    return function(callback: Function, time: number){
+    return function(){
         if(!throttleCheck){
             throttleCheck = true
             setTimeout(() => {
@@ -11,5 +11,5 @@ export const throttle = (function(){
             }, time);
         }
     }
-})()
+}
 

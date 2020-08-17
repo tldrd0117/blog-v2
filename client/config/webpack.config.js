@@ -372,6 +372,20 @@ module.exports = function(webpackEnv) {
                 
                 plugins: [
                   [
+                    "styled-jsx/babel",
+                    {
+                      "plugins": [
+                        ["styled-jsx-plugin-sass", {
+                            "sassOptions": {
+                              "includePaths": [paths.appStyle,"."],
+                              "precision": 2
+                            }
+                          }
+                        ]
+                      ]
+                    }
+                  ],
+                  [
                     require.resolve('babel-plugin-named-asset-import'),
                     {
                       loaderMap: {
@@ -426,6 +440,23 @@ module.exports = function(webpackEnv) {
             // to a file, but in development "style" loader enables hot editing
             // of CSS.
             // By default we support CSS Modules with the extension .module.css
+            // {
+            //   test: cssRegex,
+            //   exclude: cssModuleRegex,
+            //   use: [{
+            //     loader: require('styled-jsx/webpack').loader,
+            //     options: {
+            //       type: 'scoped'
+            //     }
+            //   },{
+            //     loader: require.resolve('babel-loader'),
+            //     options:{
+            //       "plugins": [
+            //         ["styled-jsx/babel", { "optimizeForSpeed": true }]
+            //       ]
+            //     }
+            //   }],
+            // },
             {
               test: cssRegex,
               exclude: cssModuleRegex,
@@ -433,6 +464,7 @@ module.exports = function(webpackEnv) {
                 importLoaders: 1,
                 sourceMap: isEnvProduction && shouldUseSourceMap,
               }),
+              
               // Don't consider CSS imports dead code even if the
               // containing package claims to have no side effects.
               // Remove this when webpack adds a warning or an error for this.

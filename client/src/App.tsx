@@ -8,21 +8,14 @@ import {
   Route
 } from 'react-router-dom'
 import Home from './pages/Home'
-import Signin from './pages/Signin';
+import User from './pages/User';
 import Signup from './pages/Signup';
 import PostWrite from './pages/PostWrite';
 import PostView from './pages/PostView';
-import { useStore } from './stores';
+import { useStore } from './hooks';
 import { throttle } from './utils/throttle';
 
 function App() {
-  const { scrollStore } = useStore()
-  window.onscroll = function(){
-    throttle(()=>{
-      //throttling 으로 변경 예정
-      scrollStore.scroll(window.pageYOffset)
-    }, 100)
-  }
   return (
     <Router>
       <Switch>
@@ -30,10 +23,7 @@ function App() {
           <Home/>
         </Route>
         <Route path="/signin">
-          <Signin/>
-        </Route>
-        <Route path="/signup">
-          <Signup/>
+          <User/>
         </Route>
         <Route path="/write">
           <PostWrite/>

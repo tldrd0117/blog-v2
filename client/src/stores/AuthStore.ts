@@ -9,11 +9,13 @@ import jwt from 'jsonwebtoken';
 import cryptoJs from 'crypto-js';
 import PostRepositoty from '../repository/PostRepositoty'
 import ErrorStore from './ErrorStore'
+import DtoFactory from '../models/DtoFactory'
 
 @Autobind
 class AuthStore{
     rootStore : RootStore
     errorStore : ErrorStore
+
     @observable token = ""
     
     constructor(rootStore: RootStore){
@@ -37,6 +39,7 @@ class AuthStore{
     @action
     async signin(signinDto: SigninDto){
         try{
+            signinDto = DtoFactory.create(SigninDto, signinDto)
             await this.errorStore.validateError(signinDto);
             const digest = cryptoJs.SHA256(signinDto.password);
             signinDto.password = cryptoJs.enc.Base64.stringify(digest)
@@ -46,26 +49,25 @@ class AuthStore{
             console.log(this.token)
             return res.data
         } catch(e) {
-            if(e instanceof Array){
-                console.log(e)
-            } else if(e.response){
-                console.log(e.response)
-            }
+            this.errorStore.handleValidateError(e)
+            this.errorStore.hadnleAxiosError(e)
+            return false;
         }
 
     }
     @action
     async signup(signupDto: SignupDto){
         try{
+            signupDto = DtoFactory.create(SignupDto, signupDto)
             await this.errorStore.validateError(signupDto);
             const digest = cryptoJs.SHA256(signupDto.password);
             signupDto.password = cryptoJs.enc.Base64.stringify(digest)
             const res : AxiosResponse = await AuthRepository.signup(signupDto)
             return res.data
-            console.log(res.data)
-            console.log(jwt.decode(res.data.token, {json:true}));
         } catch(e) {
-            console.log(e.response)
+            this.errorStore.handleValidateError(e)
+            this.errorStore.hadnleAxiosError(e)
+            return false;
         }
     }
 

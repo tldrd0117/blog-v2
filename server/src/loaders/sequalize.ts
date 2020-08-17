@@ -1,16 +1,17 @@
-import { Sequelize } from 'sequelize'
+import { Sequelize, Dialect } from 'sequelize'
 import { init } from '../models'
 import Container from 'typedi'
+import config from '../config'
 
 export default async () => {
     try{
         const sequelize = new Sequelize({
-            host: "database",
-            dialect: "mariadb",
-            database: "blog",
-            username: "root",
-            password: "qwer1234",
-            port: 3306
+            host: config.host,
+            dialect: config.dialect as Dialect,
+            database: config.database,
+            username: config.username,
+            password: config.password,
+            port: Number(config.port)
         })
         Container.set("sequelize", sequelize)
         await sequelize.authenticate();

@@ -3,7 +3,7 @@ import { observer, useAsObservableSource, useLocalStore } from 'mobx-react'
 import { TextArea, Button, H6} from "@blueprintjs/core"
 import style from './commentwrite.module.scss'
 import binder from 'classnames/bind'
-import { useStore } from '../../stores'
+import { useStore } from '../../hooks';
 import { useParams } from 'react-router-dom'
 import { PlainToaster } from '../Toaster'
 

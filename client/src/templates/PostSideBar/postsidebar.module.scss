@@ -1,3 +1,4 @@
+@import "../../styles/media.scss";
 .sidebar{
     border: 0px solid black;
     position: fixed;
@@ -6,4 +7,26 @@
     width: 200px;
     height: 400px;
     transition: top 0.3s;
+}
+
+@include mobile{
+    .sidebar{
+        position: relative;
+        top: 0px !important;
+        left: 20px;
+        margin: 20px 0px;
+        width: calc(100% - 40px);
+        height: auto;
+    }
+}
+@include tablet{
+    .sidebar{
+        left: 730px;
+        // position: relative;
+        // top: 0px !important;
+        // left: 80px;
+        // margin: 20px 0px;
+        // width: calc(100% - 40px);
+        // height: auto;
+    }
 }

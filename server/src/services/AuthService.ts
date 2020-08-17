@@ -96,9 +96,9 @@ export default class AuthService{
         }
     }
 
-    public verifyPwd( hash: string, password: string){
+    public async verifyPwd( hash: string, password: string){
         try{
-            const correct = argon2.verify(hash, password)
+            const correct = await argon2.verify(hash, password)
             if(!correct){
                 throw new Error("비밀번호가 일치하지 않습니다.")
             }

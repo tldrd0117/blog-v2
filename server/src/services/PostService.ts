@@ -53,6 +53,7 @@ export default class PostService{
             offset,
             distinct: true,
             subQuery: false,
+            order: [["id", "desc"]]
         })
         return {
             count,
@@ -127,7 +128,8 @@ export default class PostService{
                     model: User,
                     as: 'user',
                     attributes: ["username"]
-                }]
+                }],
+                order: [["id", "desc"]]
             })
             return {
                 count,

@@ -2,11 +2,12 @@ import React, { useLayoutEffect, useEffect, ReactPropTypes, ReactComponentElemen
 import { observer, useLocalStore } from 'mobx-react'
 import classNames from 'classnames/bind';
 import styles from "./postlist.module.scss"
-import { useStore } from '../../stores';
+import { useStore } from '../../hooks';
 import marked from 'marked'
 import PostItem from '../../componentGroup/postItem'
 import { useHistory } from 'react-router-dom';
 import ItemCounter from '../../componentGroup/ItemCounter';
+import { NonIdealState } from '@blueprintjs/core';
 
 const cx = classNames.bind(styles)
 
@@ -50,14 +51,23 @@ export default observer((props : HTMLAttributes<HTMLElement>) => {
                 postStore.searchText.length > 0 ?
                 <div className={`${cx({"itemWrapper":true})} ${props.className}`}>
                 {
-                    postStore.searchPosts?.map((v: any, i)=>(
-                        <PostItem
-                            onClick={()=>handlePostItemClick(v.id)}
-                            className={cx("postItem")}
-                            post={v}
-                            key={v.id}
-                            />
-                    ))
+                    postStore.searchPosts.length > 0 ?
+                        postStore.searchPosts?.map((v: any, i)=>(
+                            <PostItem
+                                onClick={()=>handlePostItemClick(v.id)}
+                                className={cx("postItem")}
+                                post={v}
+                                key={v.id}
+                                />
+                        )) :
+                        <NonIdealState
+                            className={cx("nonIdealState")}
+                            icon={"search"}
+                            title="검색결과가 없습니다"
+                            // description={this.state.description ? description : undefined}
+                            // action={this.state.action ? action : undefined}
+                        />
+
                 }
                 </div> :
                 <div className={`${cx({"itemWrapper":true})} ${props.className}`}>

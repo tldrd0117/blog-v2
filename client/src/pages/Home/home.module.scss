@@ -1,5 +1,4 @@
-@import "../../../node_modules/@blueprintjs/core/lib/scss/variables";
-
+@import "../../styles/media.scss";
 
 .container{
     display: flex;
@@ -11,4 +10,15 @@
     display: flex;
     width: 100%;
     align-self: center;
+}
+@include mobile{
+    .content{
+        flex-direction: column;
+    }
+}
+
+@include tablet{
+    .content{
+        flex-direction: column;
+    }
 }

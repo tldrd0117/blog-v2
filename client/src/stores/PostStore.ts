@@ -9,6 +9,7 @@ import jwt from 'jsonwebtoken';
 import cryptoJs from 'crypto-js';
 import PostRepositoty from '../repository/PostRepositoty'
 import ErrorStore from './ErrorStore'
+import DtoFactory from '../models/DtoFactory'
 
 @Autobind
 class PostStore{
@@ -24,11 +25,13 @@ class PostStore{
     constructor(rootStore: RootStore){
         this.rootStore = rootStore
         this.errorStore = this.rootStore.errorStore
+        
     }
 
     @action
     async searchPost(postSearchDto:PostSearchDto){
         try{
+            postSearchDto = DtoFactory.create(PostSearchDto, postSearchDto)
             await this.errorStore.validateError(postSearchDto)
             const res : AxiosResponse = await PostRepositoty.searchPost(postSearchDto)
             this.searchPosts = res.data.posts
@@ -43,6 +46,7 @@ class PostStore{
     @action
     async getPost(postGetDto: PostGetDto){
         try{
+            postGetDto = DtoFactory.create(PostGetDto, postGetDto)
             await this.errorStore.validateError(postGetDto)
             const res : AxiosResponse = await PostRepositoty.getPost(postGetDto)
             this.currentPost = res.data.data
@@ -56,6 +60,7 @@ class PostStore{
     @action
     async getPosts(postPageDto: PostPageDto){
         try{
+            postPageDto = DtoFactory.create(PostPageDto, postPageDto)
             await this.errorStore.validateError(postPageDto);
             const res : AxiosResponse = await PostRepositoty.getPosts(postPageDto);
             return res.data.data
@@ -68,6 +73,7 @@ class PostStore{
     @action
     async writePost(postWriteDto: PostWriteDto){
         try{
+            postWriteDto = DtoFactory.create(PostWriteDto, postWriteDto)
             await this.errorStore.validateError(postWriteDto);
             const res : AxiosResponse = await PostRepositoty.writePost(postWriteDto);
             return res.data
@@ -80,6 +86,7 @@ class PostStore{
     @action
     async writeComment(postWriteCommentDto:PostWriteCommentDto){
         try{
+            postWriteCommentDto = DtoFactory.create(PostWriteCommentDto, postWriteCommentDto)
             await this.errorStore.validateError(postWriteCommentDto);
             const res : AxiosResponse = await PostRepositoty.writeComment(postWriteCommentDto);
             return res.data
@@ -92,6 +99,7 @@ class PostStore{
     @action
     async updatePostPlusViewNumber(postPlusViewNumberDto: PostPlusViewNumberDto){
         try{
+            postPlusViewNumberDto = DtoFactory.create(PostPlusViewNumberDto, postPlusViewNumberDto)
             await this.errorStore.validateError(postPlusViewNumberDto);
             const res : AxiosResponse = await PostRepositoty.updatePostPlusViewNumber(postPlusViewNumberDto);
             return res.data
@@ -104,6 +112,7 @@ class PostStore{
     @action
     async getAllTags(tagAllDto: TagAllDto){
         try{
+            tagAllDto = DtoFactory.create(TagAllDto, tagAllDto)
             await this.errorStore.validateError(tagAllDto);
             const res : AxiosResponse = await PostRepositoty.getAllTags(tagAllDto);
             this.tags = res.data.data

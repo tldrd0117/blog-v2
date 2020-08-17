@@ -1,4 +1,4 @@
-@import "~@blueprintjs/core/lib/scss/variables";
+@import "../../styles/index.scss";
 .comments{
     position: fixed;
     display: block;
@@ -54,4 +54,14 @@
     background-color: #000000;
     opacity: 0;
     transition: opacity 0.3s ease-out;    
+}
+
+@include mobile{
+    .comments{
+        position: fixed;
+        display: block;
+        z-index: 101;
+        bottom: 0px;
+        width: 100%;
+    }
 }

@@ -3,7 +3,7 @@ import { observer, useLocalStore } from "mobx-react";
 import classNames from 'classnames/bind';
 import styles from "./postsidebar.module.scss"
 import { Tag, Classes } from '@blueprintjs/core';
-import { useStore } from '../../stores';
+import { useStore, useScrollTop } from '../../hooks';
 import { reaction } from 'mobx';
 
 const cx = classNames.bind(styles)
@@ -12,12 +12,11 @@ export default observer(()=>{
     const state = useLocalStore(()=>({
         sideBarStyle: {},
     }))
-    const { scrollStore, postStore } = useStore()
-    reaction(
-        ()=>scrollStore.mainScroll,
-        (scrollY)=>{
-        state.sideBarStyle = scrollY == 0? { top:"124px" }:{ top: "52px" }
-    })
+    const { postStore } = useStore()
+    const isScrollTop = useScrollTop("sidebar")
+    useEffect(()=>{
+        state.sideBarStyle = isScrollTop? { top:"124px" }:{ top: "52px" }
+    },[isScrollTop])
 
     useEffect(() => {
         postStore.getAllTags({limit: 10})

@@ -47,7 +47,7 @@ export default observer((props:ItemCounterProps) => {
             isStartPageUnit?null:<Button className={cx("itemCounterBtn")} onClick={handler}>{"<"}</Button>
         }
         {
-            elements.map((v,i)=><Button active={state.page-1==i} className={cx("itemCounterBtn")} onClick={()=>handlePageChange(v)}>{v}</Button>)
+            elements.map((v,i)=><Button key={v} active={state.page-1==i} className={cx("itemCounterBtn")} onClick={()=>handlePageChange(v)}>{v}</Button>)
         }
         {
             isEndPageUnit?null:<Button className={cx("itemCounterBtn")}>{">"}</Button>

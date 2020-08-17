@@ -1,3 +1,4 @@
+@import "../../styles/media.scss";
 .itemWrapper{
     display: flex;
     flex-direction: column;
@@ -8,6 +9,9 @@
         min-width: 400px;
         max-height: 500px;
         text-align: left;
+    }
+    .nonIdealState{
+        margin-top: 100px;
     }
 }
 .signin{
@@ -24,4 +28,26 @@
         text-align: center;
     }
 
+}
+
+@include mobile{
+    .itemWrapper{
+        .postItem{
+            width: calc(100% - 40px);
+            margin: 20px 20px 20px 20px;
+            min-width: 0px;
+            max-width: 600px;
+        }
+    }
+}
+
+@include tablet{
+    .itemWrapper{
+        .postItem{
+            width: calc(100% - 160px);
+            margin: 20px 20px 20px 80px;
+            min-width: 0px;
+            max-width: 600px;
+        }
+    }
 }

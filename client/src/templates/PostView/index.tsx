@@ -5,7 +5,7 @@ import style from './postview.module.scss'
 import binds from 'classnames/bind'
 import classnames from 'classnames'
 import { useHistory, useLocation, RouteProps, RouteComponentProps, useParams } from 'react-router-dom'
-import { useStore } from '../../stores'
+import { useStore } from '../../hooks';
 import SearchBar from '../../components/SearchBar'
 import { PostDto, PostGetDto } from '../../models/PostDto'
 import marked from 'marked'
@@ -14,19 +14,14 @@ import moment from 'moment'
 import Comments from '../../componentGroup/comments'
 import CodeMirror from 'codemirror'
 import 'codemirror/lib/codemirror.css'
-import 'codemirror/mode/markdown/markdown'
-import 'codemirror/mode/javascript/javascript'
+
+import '../../utils/codemirrorModes'
 
 const cx = binds.bind(style)
 
 marked.setOptions({
     highlight: function(code, lang) {
-        // const first: HTMLTextAreaElement = document.getElementById("first") as HTMLTextAreaElement
-        // CodeMirror.fromTextArea( first,{
-        // })
-        return `<textArea id="codes">${code}</textArea>`
-        // require('pygmentize-bundled') ({ lang: lang, format: 'html' }, code, function (err, result) {
-        // });
+        return `<textArea class="_mirror_codes__" lang="${lang}">${code}</textArea>`
     }
 });
 
@@ -61,15 +56,17 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
         if(contentRef.current && currentPost.content){
             contentRef.current.innerHTML = marked(currentPost.content)
             console.log(marked(currentPost.content))
-
-            const first: HTMLTextAreaElement = document.getElementById("codes") as HTMLTextAreaElement
-            if(first){
-                const codemirror = CodeMirror.fromTextArea( first,{
-                    lineNumbers: true,
-                    mode: "javascript"
+            const codeEles: HTMLCollectionOf<Element> = document.getElementsByClassName("_mirror_codes__")
+            if(codeEles && codeEles.length > 0){
+                Array.from(codeEles).forEach(element => {
+                    const targetEle = element as HTMLTextAreaElement
+                    const lang = element.getAttribute("lang")
+                    const codemirror = CodeMirror.fromTextArea( targetEle,{
+                        lineNumbers: true,
+                        mode: lang
+                    })
+                    codemirror.setSize("100%","auto");
                 })
-                codemirror.setSize("100%","auto");
-
             }
         }
     }, [currentPost.content])
