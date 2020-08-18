@@ -23,8 +23,11 @@ export default ({ app }:{ app : express.Application }) => {
                 result: false,
                 error: err.message
             })
+        } else {
+            next()
         }
     })
+    app.use('/*', express.static(clientUrl));
     
     return app
 }

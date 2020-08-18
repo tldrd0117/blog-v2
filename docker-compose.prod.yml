@@ -3,7 +3,7 @@ services:
   node:
     build: 
       context: ./server
-      dockerfile: ./server/Dockerfile
+      dockerfile: ./Dockerfile
     environment:
       - NODE_ENV=production
     ports: 
