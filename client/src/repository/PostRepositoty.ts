@@ -1,5 +1,5 @@
 import axios from './axiosConfig'
-import { PostWriteDto, PostWriteCommentDto, PostPageDto, PostSearchDto, PostGetDto, PostPlusViewNumberDto, TagAllDto } from '../models/PostDto'
+import { PostUpdateDto, PostWriteDto, PostWriteCommentDto, PostPageDto, PostSearchDto, PostGetDto, PostPlusViewNumberDto, TagAllDto } from '../models/PostDto'
 // import { SigninDto, SignupDto } from '../models/auth/dto'
 class PostRepository{
     BASE_URL='/post'
@@ -24,6 +24,9 @@ class PostRepository{
     }
     getAllTags(tagAllDto : TagAllDto){
         return axios.post(`${this.BASE_URL}/getAllTags`, tagAllDto)
+    }
+    updatePost(postUpdateDto: PostUpdateDto){
+        return axios.post(`${this.BASE_URL}/update`, postUpdateDto)
     }
 
 }

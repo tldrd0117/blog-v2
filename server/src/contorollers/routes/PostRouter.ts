@@ -4,7 +4,7 @@ import { Container } from 'typedi'
 import Post from "../../models/post"
 import { success, error } from '../factorys/ResponseFactory'
 import { isValid, isAuth } from "../middlewares"
-import { PostPageDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto, PostPlusViewNumberDto, TagAllDto } from "../../models/dto/PostDto"
+import { PostPageDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto, PostPlusViewNumberDto, TagAllDto, PostUpdateDto } from "../../models/dto/PostDto"
 import DtoFactory from "../../models/dto/DtoFactory"
 
 const router = Router()
@@ -55,7 +55,7 @@ export default (appRouter: Router) => {
                 const postWriteDto = req.body
                 const token = res.locals.token
                 const result = await postService.writePost(postWriteDto, token);
-                return res.json(success({})).status(200);
+                return res.json(success({data:result})).status(200);
             } catch(e) {
                 next(e)
             }
@@ -97,12 +97,16 @@ export default (appRouter: Router) => {
             }
         })
 
-    router.post("/update", async function(req: Request, res: Response){
-        const post = Post.build(req.body)
-        const result = await postService.updatePost(post);
-        return res.json(success(result)).status(200);
-        
-    })
+    router.post("/update", 
+        isAuth,
+        isValid(PostUpdateDto),
+        async function(req: Request, res: Response){
+            const post: PostUpdateDto = req.body
+            const token = res.locals.token
+            const result = await postService.updatePost(post, token);
+            return res.json(success({data:result})).status(200);
+            
+        })
     router.post("/delete", async function(req: Request, res: Response){
         const id = req.body.id
         const result = await postService.deletePost(id)

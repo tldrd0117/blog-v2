@@ -27,6 +27,7 @@ export class SignupDto implements Dto{
 }
 
 export class UserTokenDto implements Dto{
+    public id: number = 0
     public email: string = ""
     public username: string = ""
     public role: string = ""

@@ -1,16 +1,18 @@
-import React, { ChangeEvent } from 'react'
+import React, { ChangeEvent, useEffect } from 'react'
 import { observer, useLocalStore } from 'mobx-react';
-import { useStore } from '../../hooks';
+import { useStore, useErrorKey } from '../../hooks';
 import { useHistory } from 'react-router-dom';
 import { SignupDto } from '../../models/AuthDto';
-import { InputGroup, Button } from '@blueprintjs/core';
+import { InputGroup, Button, Label, FormGroup } from '@blueprintjs/core';
 import InputPassword from '../../componentGroup/InputPassword';
+import ErrorMsg from '../../components/ErrorMsg';
 export default observer(() => {
     const state = useLocalStore(()=>({
         email: "",
         password: "",
         username: ""
     }))
+    const errorKey = useErrorKey()
     const { authStore, errorStore } = useStore();
     const history = useHistory();
     const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -32,60 +34,82 @@ export default observer(() => {
             history.goBack();
         }
     }
+
     return (<>
-            <InputGroup
-                className={"loginId"}
-                placeholder="이메일"
-                large={true}
-                value={state.email}
-                onChange={handleEmailChange}
-            />
-            {
-                errorStore.currentValidateError["email"]?.length > 0 ? 
-                errorStore.currentValidateError["email"]?.map((v: string)=><p key={v} className={"errorMsg"}>{`* ${v}`}</p>): null
-            }
-            <InputPassword
-                className={"loginId"}
-                placeholder="패스워드"
-                value={state.password}
-                onChange={handlePwdChange}
-            />
-            {
-                errorStore.currentValidateError["password"]?.length > 0 ? 
-                errorStore.currentValidateError["password"]?.map((v: string)=><p key={v} className={"errorMsg"}>{`* ${v}`}</p>): null
-            }
-            <InputGroup
-                className={"loginId"}
-                placeholder="닉네임"
-                large={true}
-                value={state.username}
-                onChange={handleUsernameChange}
-            />
-            {
-                errorStore.currentValidateError["username"]?.length > 0 ? 
-                errorStore.currentValidateError["username"]?.map((v: string)=><p key={v} className={"errorMsg"}>{`* ${v}`}</p>): null
-            }
-            <Button className={"signUpButton"} onClick={handleCompleteClick}>완료</Button>
+            <div className={"inputWrapper"}>
+                <FormGroup
+                    label={"이메일"}
+                    labelInfo={"(필수)"}
+                    >
+                    <InputGroup
+                        className={"loginId"}
+                        placeholder="이메일"
+                        large={true}
+                        value={state.email}
+                        onChange={handleEmailChange}
+                    />
+                </FormGroup>
+                <ErrorMsg
+                    propKey="email"
+                    errorKey={errorKey}
+                />
+                <FormGroup
+                    label={"비밀번호"}
+                    labelInfo={"(필수)"}
+                    >
+                    <InputPassword
+                        className={"loginId"}
+                        placeholder="패스워드"
+                        value={state.password}
+                        onChange={handlePwdChange}
+                    />
+                </FormGroup>
+                
+                <ErrorMsg
+                    propKey="password"
+                    errorKey={errorKey}
+                />
+                <FormGroup
+                    label={"닉네임"}
+                    labelInfo={"(필수)"}
+                    >
+                    <InputGroup
+                        className={"loginId"}
+                        placeholder="닉네임"
+                        large={true}
+                        value={state.username}
+                        onChange={handleUsernameChange}
+                    />
+                </FormGroup>
+                
+                <ErrorMsg
+                    propKey="username"
+                    errorKey={errorKey}
+                />
+                <Button className={"signUpButton"} onClick={handleCompleteClick}>완료</Button>
+            </div>
             <style jsx global>{`
-                .loginId{
+                @import "media.scss";
+                .inputWrapper{
                     align-self: center;
-                    margin-top: 20px;
                     width: 300px;
                 }
-                .loginPasswd{
-                    align-self: center;
-                    margin-top: 20px;
-                    width: 300px;
-                }
+                
                 .signUpButton{
                     align-self: center;
                     margin-top: 30px;
-                    width: 300px;
                     height: 50px;
+                    width: 100%;
                     font-size: 18px;
                     margin-bottom: 40px;
 
                 }    
+                @include mobile{
+                    .inputWrapper{
+                        align-self: center;
+                        width: calc(100% - 50px);
+                    }
+                }
             `}</style>
         </>
     )

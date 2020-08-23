@@ -53,6 +53,7 @@ export default class AuthService{
             userTokenDto.exp = exp.getTime()
             userTokenDto.token = jwt.sign(
                 {
+                    id: userTokenDto.id,
                     email: userTokenDto.email, // We are gonna use this in the middleware 'isAuth'
                     role: userTokenDto.role,
                     username: userTokenDto.username,
@@ -71,6 +72,7 @@ export default class AuthService{
             const result = jwt.decode(userTokenDto.token, {json:true});
             console.log("result:"+result, "token:"+userTokenDto.token)
             if(result){
+                userTokenDto.id = result.id
                 userTokenDto.email = result.email
                 userTokenDto.username = result.username
                 userTokenDto.role = result.role

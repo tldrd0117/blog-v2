@@ -1,4 +1,5 @@
 import { Dto } from "./index"
+import moment from "moment"
 export default class DtoFactory {
     static create ( cls : Dto, obj : any){
         if(!obj) obj = {}
@@ -14,7 +15,13 @@ export default class DtoFactory {
             }
             if(objValue)
                 instance[key] = objValue
+            this.dateFormat(key, instance);
         }
         return instance
+    }
+    static dateFormat(key: string, instance: Dto){
+        if(key=="updatedAt" || key=="createdAt"){
+            instance[key.slice(0,7)+"FromNow"] = moment(instance[key]).locale("ko").fromNow()
+        }
     }
 }

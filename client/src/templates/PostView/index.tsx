@@ -1,9 +1,6 @@
 import React, { ComponentProps, useEffect, HTMLAttributes, useRef, Ref } from 'react'
 import { observer, useLocalStore } from 'mobx-react'
 import { Button, Icon, Position, Elevation, H1, Tag } from '@blueprintjs/core'
-import style from './postview.module.scss'
-import binds from 'classnames/bind'
-import classnames from 'classnames'
 import { useHistory, useLocation, RouteProps, RouteComponentProps, useParams } from 'react-router-dom'
 import { useStore } from '../../hooks';
 import SearchBar from '../../components/SearchBar'
@@ -14,58 +11,60 @@ import moment from 'moment'
 import Comments from '../../componentGroup/comments'
 import CodeMirror from 'codemirror'
 import 'codemirror/lib/codemirror.css'
+import 'codemirror/theme/material.css'
 
 import '../../utils/codemirrorModes'
 
-const cx = binds.bind(style)
-
-marked.setOptions({
-    highlight: function(code, lang) {
-        return `<textArea class="_mirror_codes__" lang="${lang}">${code}</textArea>`
-    }
-});
+// marked.setOptions({
+//     highlight: function(code, lang) {
+//         return `<textArea class="_mirror_codes__" lang="${lang}">${code}</textArea>`
+//     }
+// });
 
 export default observer((props: HTMLAttributes<HTMLElement>)=>{
     const { postId } = useParams()
-    // const state = useLocalStore(()=>({
-    //     username: "",
-    //     title: "",
-    //     content: "",
-    //     tags: [],
-    //     comments: [],
-    //     updatedAt: "",
-    //     view: 0,
-    //     commentsLength: 0
-    // } as PostDto))
     const contentRef: Ref<HTMLParagraphElement>|null = useRef(null)
     const { postStore ,postStore: { currentPost } } = useStore()
     const getPost = async () => {
         const data: PostDto = await postStore.getPost({postId})
-        console.log(data)
-        // state.username = data.username
-        // state.title = data.title
-        // state.content = data.content
-        // state.tags = data.tags
-        // state.comments = data.comments
-        // state.updatedAt = moment(data.updatedAt).locale("ko").fromNow()//.format("YYYY년 M월 D일")
-        // state.view = data.view
-        // state.commentsLength = data.commentsLength
     }
     useEffect(()=>{
         console.log("current")
         if(contentRef.current && currentPost.content){
             contentRef.current.innerHTML = marked(currentPost.content)
             console.log(marked(currentPost.content))
-            const codeEles: HTMLCollectionOf<Element> = document.getElementsByClassName("_mirror_codes__")
+            // const codeEles: HTMLCollectionOf<Element> = document.getElementsByClassName("_mirror_codes__")
+            const codeEles = document.querySelectorAll(".postContent pre>code")
             if(codeEles && codeEles.length > 0){
                 Array.from(codeEles).forEach(element => {
-                    const targetEle = element as HTMLTextAreaElement
-                    const lang = element.getAttribute("lang")
-                    const codemirror = CodeMirror.fromTextArea( targetEle,{
+                    const targetEle = element as HTMLElement
+                    const value = element.innerHTML
+                    element.innerHTML = ''
+                    const lang = element.getAttribute("class")?.replace("language-","")
+                    const codemirror = CodeMirror(targetEle,{
                         lineNumbers: true,
-                        mode: lang
+                        mode: lang,
+                        value,
+                        theme: "default"
                     })
                     codemirror.setSize("100%","auto");
+                    // codemirror.setOption("theme", "material")
+
+                })
+            }
+            const codeInlineEles = document.querySelectorAll(".postContent p>code")
+            if(codeInlineEles && codeInlineEles.length > 0){
+                Array.from(codeInlineEles).forEach(element => {
+                    const targetEle = element as HTMLElement
+                    const value = element.innerHTML
+                    element.innerHTML = ''
+                    const codemirror = CodeMirror(targetEle,{
+                        lineNumbers: false,
+                        value,
+                        theme: "default"
+                    })
+                    codemirror.setSize("100%","auto");
+                    
                 })
             }
         }
@@ -76,14 +75,14 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
 
     return(
         <>
-            <div className={`${props.className} ${cx("content")}`}>
+            <div className={`${props.className} postView`}>
                 <H1>{currentPost.title}</H1>
                 <p>{currentPost.username}</p>
                 <p>{moment(currentPost.updatedAt).locale("ko").fromNow()}</p>
                 {
                     currentPost.tags?.map((v:any, i: number)=>
                     <Tag
-                        className={cx("tag")}
+                        className={"tag"}
                         key={i}
                         large={true}
                         minimal={true}
@@ -91,10 +90,44 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
                         >{v.tagName}</Tag>
                     )
                 }
-                <p className={cx("postContent")} ref={contentRef}></p>
+                <p className={"postContent"} ref={contentRef}></p>
                 {/* <p>{state.comments}</p> */}
             </div>
             <Comments commentsLength={currentPost.commentsLength} comments={currentPost.comments} />
+            <style jsx global>{`
+                @import "media.scss";
+                .CodeMirror *{
+                    font-family: Consolas;
+                    font-size: 18px;
+                }
+                .postView{
+                    width: 700px;
+                    justify-self: center;
+                    margin-bottom: 60px;
+                }
+                .tag{
+                    margin-left: 10px;
+                }
+                .postContent{
+                    margin-top: 30px;
+                }
+                blockquote{
+                    padding: 1em 20px 1em 20px;
+                    border-left: 3px solid #000;
+                    margin: 0px;
+                    p{
+                        margin: 0px;
+                    }
+                }
+                
+                @include mobile{
+                    .content{
+                        width: 100%;
+                        padding: 20px;
+                        margin-bottom: 80px;
+                    }
+                }
+            `}</style>
         </>
     )
 })

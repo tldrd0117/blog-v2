@@ -18,13 +18,15 @@ export default observer(({searchBar = true, scrollAnimation = false}: TopBarProp
         searchBarStyle: { large: true }
     }))
     const history = useHistory()
-    const { authStore, scrollStore } = useStore()
-    const topbarRef: Ref<HTMLDivElement>|null = useRef(null)
+    const { authStore, postStore } = useStore()
     const handleSignInButtonClick = () => {
         history.push("/signin")
     }
     const handleWriteButtonClick = () => {
         history.push("/write")
+    }
+    const handleEditButtonClick = () => {
+        history.push(`/write/${postStore.currentPost.id}`)
     }
     const handleListButtonClick = () => {
         history.push("/")
@@ -68,10 +70,14 @@ export default observer(({searchBar = true, scrollAnimation = false}: TopBarProp
                     }
                     {
                         (!authStore.isSignin)?(
-                            <Button className={`signin`} onClick={handleSignInButtonClick}>Login</Button>
+                            <Button className={`signin`} onClick={handleSignInButtonClick}>로그인</Button>
                         ):
                         location.pathname=="/"?
-                            <Button className={`signin`} onClick={handleWriteButtonClick} icon="edit"></Button>:null
+                            <Button className={`signin`} onClick={handleWriteButtonClick}>새로쓰기</Button>:null
+                    }
+                    {
+                        (authStore.isSignin && location.pathname.startsWith("/view"))?
+                            <Button className={`signin`} onClick={handleEditButtonClick}>수정하기</Button>:null
                     }
                 </div>
             </div>

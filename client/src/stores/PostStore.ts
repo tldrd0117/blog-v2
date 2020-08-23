@@ -1,7 +1,7 @@
 import Autobind from 'autobind-decorator'
 import RootStore from './RootStore'
 import { observable, action, computed, trace, autorun } from 'mobx'
-import { PostPageDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto, PostPlusViewNumberDto, PostDto, TagAllDto } from '../models/PostDto'
+import { PostPageDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto, PostPlusViewNumberDto, PostDto, TagAllDto, PostUpdateDto } from '../models/PostDto'
 import AuthRepository from '../repository/AuthRepository'
 import { validate } from 'class-validator'
 import { AxiosResponse } from 'axios'
@@ -16,16 +16,29 @@ class PostStore{
     rootStore : RootStore
     errorStore : ErrorStore
 
-    @observable searchPosts = []
-    @observable searchCount = 0
+    @observable posts = []
+    @observable count = 0
     @observable searchText = ""
+    @observable searchTypes: string[] = []
     @observable currentPost: any = {}
     @observable tags: any = []
     
     constructor(rootStore: RootStore){
         this.rootStore = rootStore
         this.errorStore = this.rootStore.errorStore
-        
+    }
+
+    @computed
+    get isSearch(){
+        return this.searchText.length > 0
+    }
+
+    @computed 
+    get currentPostTags(){
+        if(this.currentPost && this.currentPost.tags && this.currentPost.tags.length>0){
+            return this.currentPost.tags.map((v:any)=>v.tagName)
+        }
+        return []
     }
 
     @action
@@ -34,8 +47,10 @@ class PostStore{
             postSearchDto = DtoFactory.create(PostSearchDto, postSearchDto)
             await this.errorStore.validateError(postSearchDto)
             const res : AxiosResponse = await PostRepositoty.searchPost(postSearchDto)
-            this.searchPosts = res.data.posts
-            this.searchCount = res.data.count
+            this.searchText = postSearchDto.word
+            this.searchTypes = postSearchDto.type
+            this.posts = res.data.posts
+            this.count = res.data.count
             // return res.data
         }catch(e){
             this.errorStore.handleValidateError(e)
@@ -63,6 +78,8 @@ class PostStore{
             postPageDto = DtoFactory.create(PostPageDto, postPageDto)
             await this.errorStore.validateError(postPageDto);
             const res : AxiosResponse = await PostRepositoty.getPosts(postPageDto);
+            this.posts = res.data.data.posts
+            this.count = res.data.data.count
             return res.data.data
         } catch(e) {
             this.errorStore.handleValidateError(e)
@@ -76,6 +93,19 @@ class PostStore{
             postWriteDto = DtoFactory.create(PostWriteDto, postWriteDto)
             await this.errorStore.validateError(postWriteDto);
             const res : AxiosResponse = await PostRepositoty.writePost(postWriteDto);
+            return res.data
+        } catch(e) {
+            this.errorStore.handleValidateError(e)
+            this.errorStore.hadnleAxiosError(e)
+        }
+    }
+
+    @action
+    async updatePost(postUpdateDto: PostUpdateDto){
+        try{
+            postUpdateDto = DtoFactory.create(PostUpdateDto, postUpdateDto)
+            await this.errorStore.validateError(postUpdateDto);
+            const res : AxiosResponse = await PostRepositoty.updatePost(postUpdateDto)
             return res.data
         } catch(e) {
             this.errorStore.handleValidateError(e)

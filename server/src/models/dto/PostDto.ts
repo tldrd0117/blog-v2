@@ -76,6 +76,8 @@ export class CommentDto implements Dto {
     depth: number = 1
     @Min(0)
     parentId: number = 0
+    @IsDateString()
+    updatedAt: string = ""
     @ValidateNested({
         each: true
     })
@@ -89,6 +91,19 @@ export class TagAllDto implements Dto {
 }
 
 export class PostWriteDto implements Dto{
+    @Length(1,200, lengthMsg("제목"))
+    public title: string = ""
+    @Length(1, 10000, lengthMsg("내용"))
+    public content: string = ""
+    @Length(1,200,{
+        each: true,
+        ...lengthMsg("태그")
+    })
+    public tags: string[] = []
+}
+
+export class PostUpdateDto implements Dto{
+    public postId: number = 0
     @Length(1,200, lengthMsg("제목"))
     public title: string = ""
     @Length(1, 10000, lengthMsg("내용"))

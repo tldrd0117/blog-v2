@@ -1,24 +1,26 @@
-import React, { ChangeEvent } from 'react'
+import React, { ChangeEvent, useEffect } from 'react'
 import { observer, useLocalStore, useObserver } from 'mobx-react'
-import { useStore } from '../../hooks';
+import { useStore, useErrorKey } from '../../hooks';
 import { useHistory } from 'react-router-dom'
 import { SigninDto } from '../../models/AuthDto'
-import { InputGroup, Button } from '@blueprintjs/core'
+import { InputGroup, Button, Label, FormGroup } from '@blueprintjs/core'
 import InputPassword from '../../componentGroup/InputPassword'
+import ErrorMsg from '../../components/ErrorMsg';
 
 export default observer(() => {
     const state = useLocalStore(()=>({
         email: "",
         password: "",
-        showPassword: false
+        showPassword: false,
     }))
+    const errorKey = useErrorKey()
     const { authStore, errorStore } = useStore()
     const history = useHistory();
     const handleSignInClick = async () => {
         const result = await authStore.signin({
             email: state.email,
             password: state.password
-        } as SigninDto)
+        })
         if(result){
             history.goBack()
         }
@@ -31,56 +33,59 @@ export default observer(() => {
     const handlePasswordChange = ( e: ChangeEvent<HTMLInputElement> ) => {
         state.password = e.target.value
     }
-    console.log("render", errorStore.currentValidateError["email"])
+    
+
     return (
     <>
-        <InputGroup
-            className={"loginId"}
-            placeholder="이메일"
-            large={true}
-            value={state.email}
-            onChange={handleEmailChange}
-        />
-        {
-            errorStore.currentValidateError["email"]?.length > 0 ? 
-            errorStore.currentValidateError["email"]?.map((v: string)=><p key={v} className={"errorMsg"}>{`* ${v}`}</p>): null
-        }
-        <InputPassword
-            placeholder="패스워드"
-            className={"loginPasswd"}
-            value={state.password}
-            onChange={handlePasswordChange}
-        />
-        {
-            errorStore.currentValidateError["password"]?.length > 0 ? 
-            errorStore.currentValidateError["password"]?.map((v: string)=><p key={v} className={"errorMsg"}>{`* ${v}`}</p>): null
-        }
-        <Button className={"loginButton"} onClick={handleSignInClick}>로그인</Button>
+        <div className={"inputWrapper"}>
+            <FormGroup
+                label={"이메일"}
+                >
+                <InputGroup
+                    className={"loginId"}
+                    placeholder="이메일"
+                    large={true}
+                    value={state.email}
+                    onChange={handleEmailChange}
+                />
+            </FormGroup>
+            <ErrorMsg
+                propKey="email"
+                errorKey={errorKey}
+            />
+            <FormGroup
+                label={"비밀번호"}
+                >
+                <InputPassword
+                    placeholder="비밀번호"
+                    className={"loginPasswd"}
+                    value={state.password}
+                    onChange={handlePasswordChange}
+                />
+            </FormGroup>
+            <ErrorMsg
+                propKey="password"
+                errorKey={errorKey}
+            />
+            <Button className={"loginButton"} onClick={handleSignInClick}>로그인</Button>
+        </div>
         <style jsx global>{`
-            .loginId{
+            @import 'media.scss';
+            .inputWrapper{
                 align-self: center;
-                margin-top: 20px;
-                width: 300px;
-            }
-            .loginPasswd{
-                align-self: center;
-                margin-top: 20px;
                 width: 300px;
             }
             .loginButton{
-                align-self: center;
                 margin-top: 30px;
-                width: 300px;
+                width: 100%;
                 height: 50px;
                 font-size: 18px;
                 margin-bottom: 40px;
             }
-            .errorMsg{
-                color: red;
-                width: 300px;
-                margin: 4px auto;
-                position: relative;
-                font-size: 12px;
+            @include mobile{
+                .inputWrapper{
+                    width: calc(100% - 50px);
+                }
             }
         `}</style>
     </>)

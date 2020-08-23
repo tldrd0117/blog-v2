@@ -25,6 +25,9 @@ function App() {
         <Route path="/signin">
           <User/>
         </Route>
+        <Route path="/write/:postId">
+          <PostWrite/>
+        </Route>
         <Route path="/write">
           <PostWrite/>
         </Route>

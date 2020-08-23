@@ -1,6 +1,7 @@
 import { Dto } from './index'
-import { Min, Length, MinLength, ValidateNested, IsInt, ArrayContains, IsDateString } from 'class-validator'
+import { Min, Length, MinLength, ValidateNested, IsInt, ArrayContains, IsDateString, ValidateIf } from 'class-validator'
 import { lengthMsg } from './messages'
+import { ArrayIncludes } from '../utils/ArrayIncludes'
 
 export class PostPageDto implements Dto{
     @Min(1)
@@ -11,7 +12,7 @@ export class PostPageDto implements Dto{
 
 export class PostGetDto implements Dto{
     @Min(1)
-    public postId:number=0
+    public postId: number=0
 }
 
 export class PostSearchDto implements Dto{
@@ -21,7 +22,7 @@ export class PostSearchDto implements Dto{
     public offset: number=0
     @MinLength(1)
     public word: string = ""
-    @ArrayContains(["tag","content","title"])
+    @ArrayIncludes(["tag","content","title"])
     public type: string[] = []
 }
 
@@ -75,6 +76,19 @@ export class PostWriteDto implements Dto{
         ...lengthMsg("태그")
     })
     public tags!: string[]
+}
+
+export class PostUpdateDto implements Dto{
+    public postId: number = 0
+    @Length(1,200, lengthMsg("제목"))
+    public title: string = ""
+    @Length(1, 10000, lengthMsg("내용"))
+    public content: string = ""
+    @Length(1,200,{
+        each: true,
+        ...lengthMsg("태그")
+    })
+    public tags: string[] = []
 }
 
 export class TagAllDto implements Dto {

@@ -5,9 +5,10 @@ import { observer, useLocalStore } from "mobx-react";
 interface InputTagProps{
     values?:Array<string>
     change?:Function
+    large?:boolean
 }
 
-export default observer(({values, change, className}: InputTagProps & { className?: string } )=>{
+export default observer(({values, change, className, large}: InputTagProps & { className?: string } )=>{
     const handleClear = () => {
         if(change)change(values)
     }
@@ -29,6 +30,7 @@ export default observer(({values, change, className}: InputTagProps & { classNam
                 placeholder="태그를 입력해주세요(Enter로 구분)"
                 rightElement={clearButton}
                 values={values}
+                large={large}
                 onChange={handleChange}
             />
         </>

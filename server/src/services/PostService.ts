@@ -1,7 +1,7 @@
 
 import Container, { Service, Inject } from "typedi"
 import Post from "../models/post"
-import { PostPageDto, PostDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto, CommentDto, TagAllDto } from "../models/dto/PostDto"
+import { PostPageDto, PostDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto, CommentDto, TagAllDto, PostUpdateDto } from "../models/dto/PostDto"
 import DtoFactory from "../models/dto/DtoFactory"
 import PostTag from "../models/postTag"
 import { Sequelize, Transaction, QueryTypes, Op } from "sequelize"
@@ -134,11 +134,26 @@ export default class PostService{
             return {
                 count,
                 posts: rows.map((v:any)=>{
-                    v.content = stringUtils.removeSymbol(v.content)
-                    v.content = v.content.slice(0,300)+(v.content.length>300?"...":"")
-                    v.username = v.user?.username
-                    v.commentsLength = v.comments.length
-                    return DtoFactory.create(PostDto, v)
+                    const postResult = v.toJSON()
+                    postResult.content = stringUtils.removeSymbol(postResult.content)
+                    postResult.content = postResult.content.slice(0,300)+(postResult.content.length>300?"...":"")
+                    return DtoFactory.create(PostDto, {
+                        ...postResult,
+                        username: postResult.user.username,
+                        commentsLength: postResult?.comments.length,
+                        comments: postResult?.comments?.map((v)=>{
+                            return DtoFactory.create(CommentDto, {
+                                ...v,
+                                username: v?.user?.username,
+                                comments: v.comments?.map((v)=>{
+                                    return DtoFactory.create(CommentDto, {
+                                        ...v,
+                                        username: v?.user?.username
+                                    })
+                                })
+                            })
+                        })
+                    })
                 })
             }
         } catch(e) {
@@ -181,6 +196,7 @@ export default class PostService{
                 }]
             })
             const postResult = post.toJSON()
+            console.log(postResult)
             return DtoFactory.create(PostDto, {
                 ...postResult,
                 username: postResult.user.username,
@@ -219,7 +235,78 @@ export default class PostService{
         return tags
     }
 
-    async writePost(postWriteDto : PostWriteDto, token: string) : Promise<Boolean>{
+    async isPostedUser(id: number, userId: number, transaction?: Transaction): Promise<Post | null>{
+        try{
+            const result: Post | null = await Post.findOne({
+                attributes: ["authorId"],
+                where:{
+                    id
+                },
+                include:[{
+                    model: Tag,
+                    as: 'tags'
+                }],
+                transaction
+            })
+            if(result && result.authorId != userId){
+                throw new Error("게시자만 수정할 수 있습니다.")
+            } else if(!result) {
+                throw new Error("이미 삭제된 포스트 입니다.")
+            }
+            return result;
+        } catch(e) {
+            throw e
+        }
+    }
+
+    async updatePost(postUpdateDto : PostUpdateDto, token: string) : Promise<boolean>{
+        try{
+            const result = await this.sequelize.transaction( async (transaction:Transaction)=>{
+                const { postId, title, content, tags } = postUpdateDto
+                console.log("writePorst", "token:"+token)
+                let userTokenDto = DtoFactory.create(UserTokenDto, { token })
+                userTokenDto = this.authService.decodeToken(userTokenDto)
+                const post: Post = (await this.isPostedUser(postId, userTokenDto.id, transaction)) as Post
+                await this.authService.getUserIfRegisted(userTokenDto.email, transaction)
+                await Post.update({
+                    title, content,
+                }, { where: {id: postUpdateDto.postId}})
+                if(post.tags && post.tags.length > 0){
+                    await PostTag.destroy({where:{postId}})
+                }
+                if(postUpdateDto.tags && postUpdateDto.tags.length >0){
+                    await this.writeOrUpdateTag(postUpdateDto.postId, postUpdateDto.tags, transaction)
+                }
+                return true
+            })
+            return result
+        } catch(e) {
+            throw e
+        }
+    }
+
+    async writeOrUpdateTag(postId: number, tags: string[], transaction?: Transaction){
+        const tagResults: [Tag, boolean][] = await Promise.all([
+            ...tags.map(tagName =>{
+                return Tag.findOrCreate({
+                    where:{
+                        tagName
+                    },
+                    defaults:{
+                        tagName,
+                        viewCount: 0,
+                        searchCount: 0
+                    },
+                    transaction
+                })
+            })
+        ])
+        await PostTag.bulkCreate(tagResults.map(v=>({postId, tagId: v[0].id})),{
+            transaction
+        })
+    }
+
+    async writePost(postWriteDto : PostWriteDto, token: string) : Promise<boolean>{
         try{
             const result = await this.sequelize.transaction( async (transaction:Transaction)=>{
                 const { title, content, tags } = postWriteDto
@@ -227,28 +314,15 @@ export default class PostService{
                 let userTokenDto = DtoFactory.create(UserTokenDto, { token })
                 userTokenDto = this.authService.decodeToken(userTokenDto)
                 const user = await this.authService.getUserIfRegisted(userTokenDto.email, transaction)
-                const insertedPost = await Post.create({
+                const post = await Post.create({
                     authorId: user.id, 
                     title, 
                     content,
-                    tags: tags.map(v=>({
-                        tagName: v,
-                        viewCount: 0,
-                        searchCount: 0
-                    }))
                 }, {
-                    include: [{
-                        model: Tag,
-                        as: "tags"
-                    }],
                     transaction
                 })
-                // if(tags && tags.length>0){
-                //     await PostTag.bulkCreate(tags.map(v=>({
-                //         postId: insertedPost.id,
-                //         tagName: v
-                //     })), { transaction })
-                // }
+                if(tags && tags.length > 0)
+                    await this.writeOrUpdateTag(post.id, tags, transaction)
                 return true
             })
             return result
@@ -272,23 +346,19 @@ export default class PostService{
     }
 
     async updatePostPlusViewNumber(postId: number){
-        await Post.increment("view", {where: {id: postId}})
+        
+        await Post.increment("view", {
+            where: {
+                id: postId
+            },
+            silent: true
+        })
         return await Tag.increment("viewCount", {
             where:{
                 [Op.or]:[Sequelize.literal(`id IN (SELECT tagId from postTags where postId=${postId})`)]
-            }
+            },
+            silent: true
         })
-    }
-
-    async updatePost(post : Post){
-        const [count, result] = await Post.update({
-            ...post
-        },{
-            where:{
-                id: post.id
-            }
-        })
-        return [count, result]
     }
 
     async deletePost(id : number){

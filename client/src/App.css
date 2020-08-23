@@ -6,11 +6,15 @@
 
 *{
   box-sizing: border-box;
-  font-family: Noto Sans KR;
   word-break: break-all;
+  font-family: Noto Sans KR;
+
 }
 .App {
   text-align: center;
+}
+
+body{
 }
 
 .App-logo {
@@ -50,10 +54,6 @@
 
 .hide{
   display: none;
-}
-
-.main-content{
-  margin-top: 124px;
 }
 
 @font-face {
