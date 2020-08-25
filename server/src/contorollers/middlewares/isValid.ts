@@ -12,7 +12,7 @@ export default (dto: Dto) => {
         req.body = dtoInstance
         console.log(isError, errors, req.body)
         if(isError){
-            next(errors)
+            next({message: errors})
         } else {
             next()
         }

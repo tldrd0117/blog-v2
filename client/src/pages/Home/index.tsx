@@ -1,8 +1,8 @@
 import React, { Component } from "react"
 import { observer, useLocalStore } from "mobx-react";
-import TopBar from "../../templates/TopBar";
-import PostList from "../../templates/PostList";
-import PostSideBar from "../../templates/PostSideBar";
+import TopBar from "../../componentGroup/TopBar";
+import PostList from "./templates/PostList";
+import PostSideBar from "./templates/PostSideBar";
 
 export default observer (() => {
     return (

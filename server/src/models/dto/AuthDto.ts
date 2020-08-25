@@ -18,7 +18,7 @@ export class SignupDto implements Dto{
     @Length(8,50, lengthMsg("이메일"))
     public email: string = ""
 
-    @Length(8,20, lengthMsg("비밀번호"))
+    @Length(8,50, lengthMsg("비밀번호"))
     public password: string = ""
 
     @Length(2,20, lengthMsg("이름"))
@@ -36,6 +36,7 @@ export class UserTokenDto implements Dto{
 }
 
 export type User = {
+    id: number
     email: string
     role: string
     username: string

@@ -91,6 +91,10 @@ export class PostUpdateDto implements Dto{
     public tags: string[] = []
 }
 
+export class PostDeleteDto implements Dto{
+    public postId: number = 0
+}
+
 export class TagAllDto implements Dto {
     @Min(1)
     limit: number = 1

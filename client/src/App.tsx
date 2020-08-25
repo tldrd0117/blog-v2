@@ -9,7 +9,6 @@ import {
 } from 'react-router-dom'
 import Home from './pages/Home'
 import User from './pages/User';
-import Signup from './pages/Signup';
 import PostWrite from './pages/PostWrite';
 import PostView from './pages/PostView';
 import { useStore } from './hooks';

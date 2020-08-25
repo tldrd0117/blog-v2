@@ -2,11 +2,11 @@ import React, { useLayoutEffect, useEffect, ReactPropTypes, ReactComponentElemen
 import { observer, useLocalStore } from 'mobx-react'
 import classNames from 'classnames/bind';
 import styles from "./postlist.module.scss"
-import { useStore } from '../../hooks';
+import { useStore } from '../../../../hooks';
 import marked from 'marked'
-import PostItem from '../../componentGroup/postItem'
+import PostItem from '../../../../componentGroup/postItem'
 import { useHistory } from 'react-router-dom';
-import ItemCounter from '../../componentGroup/ItemCounter';
+import ItemCounter from '../../../../componentGroup/ItemCounter';
 import { NonIdealState } from '@blueprintjs/core';
 
 const cx = classNames.bind(styles)

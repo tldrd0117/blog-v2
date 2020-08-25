@@ -3,7 +3,7 @@ import { observer, useLocalStore } from "mobx-react";
 import classNames from 'classnames/bind';
 import styles from "./postsidebar.module.scss"
 import { Tag, Classes } from '@blueprintjs/core';
-import { useStore, useScrollTop } from '../../hooks';
+import { useStore, useScrollTop } from '../../../../hooks';
 import { reaction } from 'mobx';
 
 const cx = classNames.bind(styles)
@@ -46,7 +46,7 @@ export default observer(()=>{
             } */}
             <h3 style={{paddingTop:"20px"}} className={Classes.HEADING}>Tag</h3>
             {
-                postStore.tags?.map((v:any)=><Tag onClick={handleTagClick} style={{margin:"4px"}} minimal={false}>{v.tagName}</Tag>)
+                postStore.tags?.map((v:any)=><Tag onClick={handleTagClick} key={v.id} style={{margin:"4px"}} minimal={false}>{v.tagName}</Tag>)
             }
         </div>
     </>

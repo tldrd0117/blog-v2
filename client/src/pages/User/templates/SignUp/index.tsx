@@ -1,11 +1,11 @@
 import React, { ChangeEvent, useEffect } from 'react'
 import { observer, useLocalStore } from 'mobx-react';
-import { useStore, useErrorKey } from '../../hooks';
+import { useStore, useErrorKey } from '@/hooks';
 import { useHistory } from 'react-router-dom';
-import { SignupDto } from '../../models/AuthDto';
+import { SignupDto } from '@/models/AuthDto';
 import { InputGroup, Button, Label, FormGroup } from '@blueprintjs/core';
-import InputPassword from '../../componentGroup/InputPassword';
-import ErrorMsg from '../../components/ErrorMsg';
+import InputPassword from '@/components/InputPassword';
+import ErrorMsg from '@/components/ErrorMsg';
 export default observer(() => {
     const state = useLocalStore(()=>({
         email: "",

@@ -10,14 +10,17 @@ export default function(req: Request,res: Response, next: NextFunction){
         const token = authHeader.split(" ")[1];
         jwt.verify(token, config.jwtSecret, (err, user)=>{
             if(err){
-                return res.json({result:"invalid auth"});
+                next({message:"로그인이 필요합니다."})
+                // return res.json({result:"invalid auth"});
             }
             res.locals.token = token;
-            return next();
+            next();
         })
 
     } else {
-        res.json({result:"invalid call"}).status(401);
+        next({message:"로그인이 필요합니다."});
+        // res.status(401)
+        // res.json({result:"invalid call"}).status(401);
     }
     
 }

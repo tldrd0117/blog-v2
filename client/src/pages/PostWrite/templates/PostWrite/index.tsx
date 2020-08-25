@@ -4,12 +4,12 @@ import CodeMirror from 'react-codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/markdown/markdown'
 import {Button, InputGroup, ButtonGroup, Popover, Position, MenuItem, Menu, FormGroup} from '@blueprintjs/core'
-import InputTag from '../../componentGroup/InputTag'
-import { useStore, useErrorKey } from '../../hooks';
-import { PostWriteDto, PostDto } from '../../models/PostDto'
+import InputTag from '../../../../components/InputTag'
+import { useStore, useErrorKey } from '../../../../hooks';
+import { PostWriteDto, PostDto } from '../../../../models/PostDto'
 import { useLocation, useParams, useHistory } from 'react-router-dom'
 import { reaction } from 'mobx'
-import ErrorMsg from '../../components/ErrorMsg'
+import ErrorMsg from '../../../../components/ErrorMsg'
 
 export default observer(function (props : HTMLAttributes<HTMLElement>) {
     let codemirror : CodeMirror.Editor

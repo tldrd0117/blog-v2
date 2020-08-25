@@ -11,7 +11,9 @@ export default async () => {
             database: config.database,
             username: config.username,
             password: config.password,
-            port: Number(config.port)
+            port: Number(config.port),
+            dialectOptions: {
+            }
         })
         Container.set("sequelize", sequelize)
         await sequelize.authenticate();

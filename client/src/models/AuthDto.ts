@@ -24,6 +24,7 @@ export class SignupDto implements Dto{
 }
 
 export type User = {
+    id: number
     email: string
     role: string
     username: string

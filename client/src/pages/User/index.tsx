@@ -6,10 +6,10 @@ import {
     TabId,
 } from "@blueprintjs/core";
 import { observer, useObserver, useLocalStore } from 'mobx-react'
-import Login from "../../templates/Login";
-import SignUp from "../../templates/SignUp";
+import Login from "./templates/Login";
+import SignUp from "./templates/SignUp";
 import { useHistory } from "react-router-dom";
-import { useStore } from "../../hooks";
+import { useStore } from "@/hooks";
 
 export default observer(() => {
     const state = useLocalStore(()=>({

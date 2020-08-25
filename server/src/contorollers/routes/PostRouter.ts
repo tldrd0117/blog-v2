@@ -4,8 +4,9 @@ import { Container } from 'typedi'
 import Post from "../../models/post"
 import { success, error } from '../factorys/ResponseFactory'
 import { isValid, isAuth } from "../middlewares"
-import { PostPageDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto, PostPlusViewNumberDto, TagAllDto, PostUpdateDto } from "../../models/dto/PostDto"
+import { PostPageDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto, PostPlusViewNumberDto, TagAllDto, PostUpdateDto, PostDeleteDto } from "../../models/dto/PostDto"
 import DtoFactory from "../../models/dto/DtoFactory"
+import { nextTick } from "process"
 
 const router = Router()
 
@@ -100,17 +101,29 @@ export default (appRouter: Router) => {
     router.post("/update", 
         isAuth,
         isValid(PostUpdateDto),
-        async function(req: Request, res: Response){
-            const post: PostUpdateDto = req.body
-            const token = res.locals.token
-            const result = await postService.updatePost(post, token);
-            return res.json(success({data:result})).status(200);
+        async function(req: Request, res: Response, next: NextFunction){
+            try{
+                const post: PostUpdateDto = req.body
+                const token = res.locals.token
+                const result = await postService.updatePost(post, token);
+                return res.json(success({data:result})).status(200);
+            } catch(e) {
+                next(e)
+            }
             
         })
-    router.post("/delete", async function(req: Request, res: Response){
-        const id = req.body.id
-        const result = await postService.deletePost(id)
-        return res.json(success({count: result})).status(200);
+    router.post("/delete", 
+        isAuth,
+        isValid(PostDeleteDto),
+        async function(req: Request, res: Response, next: NextFunction){
+            try{
+                const post: PostDeleteDto = req.body
+                const token = res.locals.token
+                const result = await postService.deletePost(post, token);
+                return res.json(success({data: result})).status(200);
+            } catch(e) {
+                next(e)
+            }
 
     })
 }

@@ -1,7 +1,7 @@
 import Autobind from 'autobind-decorator'
 import RootStore from './RootStore'
 import { observable, action, computed, trace, autorun } from 'mobx'
-import { PostPageDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto, PostPlusViewNumberDto, PostDto, TagAllDto, PostUpdateDto } from '../models/PostDto'
+import { PostPageDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto, PostPlusViewNumberDto, PostDto, TagAllDto, PostUpdateDto, PostDeleteDto } from '../models/PostDto'
 import AuthRepository from '../repository/AuthRepository'
 import { validate } from 'class-validator'
 import { AxiosResponse } from 'axios'
@@ -10,11 +10,13 @@ import cryptoJs from 'crypto-js';
 import PostRepositoty from '../repository/PostRepositoty'
 import ErrorStore from './ErrorStore'
 import DtoFactory from '../models/DtoFactory'
+import AuthStore from './AuthStore'
 
 @Autobind
 class PostStore{
     rootStore : RootStore
     errorStore : ErrorStore
+    authStore : AuthStore
 
     @observable posts = []
     @observable count = 0
@@ -26,6 +28,15 @@ class PostStore{
     constructor(rootStore: RootStore){
         this.rootStore = rootStore
         this.errorStore = this.rootStore.errorStore
+        this.authStore = this.rootStore.authStore
+    }
+
+    @computed
+    get isAuthor(){
+        if(!this.authStore.isSignin){
+            return false
+        }
+        return this.authStore.user.id == this.currentPost.userId
     }
 
     @computed
@@ -146,6 +157,19 @@ class PostStore{
             await this.errorStore.validateError(tagAllDto);
             const res : AxiosResponse = await PostRepositoty.getAllTags(tagAllDto);
             this.tags = res.data.data
+            return res.data.data
+        } catch(e) {
+            this.errorStore.handleValidateError(e)
+            this.errorStore.hadnleAxiosError(e)
+        }
+    }
+
+    @action
+    async deletePost(postDeleteDto: PostDeleteDto){
+        try{
+            postDeleteDto = DtoFactory.create(PostDeleteDto, postDeleteDto)
+            await this.errorStore.validateError(postDeleteDto);
+            const res : AxiosResponse = await PostRepositoty.deletePost(postDeleteDto);
             return res.data.data
         } catch(e) {
             this.errorStore.handleValidateError(e)

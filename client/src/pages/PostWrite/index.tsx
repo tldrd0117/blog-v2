@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import { observer, useLocalStore } from "mobx-react";
-import TopBar from "../../templates/TopBar";
-import PostWrite from "../../templates/PostWrite";
+import TopBar from "@/componentGroup/TopBar";
+import PostWrite from "./templates/PostWrite";
 
 export default observer (() => {
     return (

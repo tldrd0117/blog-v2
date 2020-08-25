@@ -39,6 +39,7 @@ export class PostDto implements Dto{
     public id: number = 0
     @Length(1,20, lengthMsg("이름"))
     public username: string = ""
+    public userId?: number = undefined
     @Length(1,200, lengthMsg("제목"))
     public title: string = ""
     @Length(1, 10000, lengthMsg("내용"))
@@ -113,6 +114,10 @@ export class PostUpdateDto implements Dto{
         ...lengthMsg("태그")
     })
     public tags: string[] = []
+}
+
+export class PostDeleteDto implements Dto{
+    public postId: number = 0
 }
 
 export class PostWriteCommentDto implements Dto{

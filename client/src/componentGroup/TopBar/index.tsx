@@ -1,7 +1,7 @@
 import React, { ComponentProps, useRef, Ref, useEffect } from 'react'
 import { observer, useLocalStore } from 'mobx-react'
 import { Button, Icon, Position, Elevation, Classes } from '@blueprintjs/core'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory, useLocation, useParams } from 'react-router-dom'
 import { useStore, useScrollTop, useMediaQuery } from '../../hooks';
 import SearchBar from '../../components/SearchBar'
 import { computed, toJS, reaction } from 'mobx'
@@ -19,6 +19,7 @@ export default observer(({searchBar = true, scrollAnimation = false}: TopBarProp
     }))
     const history = useHistory()
     const { authStore, postStore } = useStore()
+    const params:any = useParams()
     const handleSignInButtonClick = () => {
         history.push("/signin")
     }
@@ -30,6 +31,14 @@ export default observer(({searchBar = true, scrollAnimation = false}: TopBarProp
     }
     const handleListButtonClick = () => {
         history.push("/")
+    }
+    const handleDeleteButtonClick = async () => {
+        if(params.postId){
+            const data = await postStore.deletePost({postId: params.postId})
+            if(data && data.result){
+                history.goBack()
+            }
+        }
     }
     if(scrollAnimation){
         const scrollY = useScrollTop("topbar")
@@ -66,7 +75,7 @@ export default observer(({searchBar = true, scrollAnimation = false}: TopBarProp
                 <div className={"buttonWrapper"}>
                     {
                         (location.pathname=="/write" || location.pathname.startsWith("/view"))?
-                        <Button className={`signin`} onClick={handleListButtonClick} icon="list"></Button>:null
+                        <Button className={`signin`} onClick={handleListButtonClick}>리스트</Button>:null
                     }
                     {
                         (!authStore.isSignin)?(
@@ -76,9 +85,18 @@ export default observer(({searchBar = true, scrollAnimation = false}: TopBarProp
                             <Button className={`signin`} onClick={handleWriteButtonClick}>새로쓰기</Button>:null
                     }
                     {
-                        (authStore.isSignin && location.pathname.startsWith("/view"))?
-                            <Button className={`signin`} onClick={handleEditButtonClick}>수정하기</Button>:null
+                        postStore.isAuthor ? (<>
+                        {
+                            (authStore.isSignin && location.pathname.startsWith("/view"))?
+                                <Button className={`signin`} onClick={handleEditButtonClick}>수정하기</Button>:null
+                        }
+                        {
+                            (location.pathname=="/write" || location.pathname.startsWith("/view"))?
+                            <Button className={`signin`} onClick={handleDeleteButtonClick}>삭제하기</Button>:null
+                        }
+                        </>):null
                     }
+                    
                 </div>
             </div>
             <style jsx>{`

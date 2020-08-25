@@ -2,18 +2,16 @@ import React, { ComponentProps, useEffect, HTMLAttributes, useRef, Ref } from 'r
 import { observer, useLocalStore } from 'mobx-react'
 import { Button, Icon, Position, Elevation, H1, Tag } from '@blueprintjs/core'
 import { useHistory, useLocation, RouteProps, RouteComponentProps, useParams } from 'react-router-dom'
-import { useStore } from '../../hooks';
-import SearchBar from '../../components/SearchBar'
-import { PostDto, PostGetDto } from '../../models/PostDto'
+import { useStore } from '@/hooks';
+import { PostDto, PostGetDto } from '@/models/PostDto'
 import marked from 'marked'
-import DtoFactory from '../../models/DtoFactory'
 import moment from 'moment'
-import Comments from '../../componentGroup/comments'
+import Comments from '@/componentGroup/comments'
 import CodeMirror from 'codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/material.css'
 
-import '../../utils/codemirrorModes'
+import '@/utils/codemirrorModes'
 
 // marked.setOptions({
 //     highlight: function(code, lang) {

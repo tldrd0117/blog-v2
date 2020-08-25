@@ -1,7 +1,7 @@
 import React from 'react'
 import { observer } from "mobx-react";
-import TopBar from "../../templates/TopBar";
-import PostView from "../../templates/PostView";
+import TopBar from "../../componentGroup/TopBar";
+import PostView from "./templates/PostView";
 
 export default observer(()=>{
     return(

@@ -1,7 +1,7 @@
 
 import Container, { Service, Inject } from "typedi"
 import Post from "../models/post"
-import { PostPageDto, PostDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto, CommentDto, TagAllDto, PostUpdateDto } from "../models/dto/PostDto"
+import { PostPageDto, PostDto, PostWriteDto, PostWriteCommentDto, PostSearchDto, PostGetDto, CommentDto, TagAllDto, PostUpdateDto, PostDeleteDto } from "../models/dto/PostDto"
 import DtoFactory from "../models/dto/DtoFactory"
 import PostTag from "../models/postTag"
 import { Sequelize, Transaction, QueryTypes, Op } from "sequelize"
@@ -192,7 +192,7 @@ export default class PostService{
                 }, {
                     model: User,
                     as: 'user',
-                    attributes: ["username"]
+                    attributes: ["username","id"]
                 }]
             })
             const postResult = post.toJSON()
@@ -200,6 +200,7 @@ export default class PostService{
             return DtoFactory.create(PostDto, {
                 ...postResult,
                 username: postResult.user.username,
+                userId: postResult.user.id,
                 commentsLength: postResult?.comments.length,    
                 comments: postResult?.comments?.map((v)=>{
                     return DtoFactory.create(CommentDto, {
@@ -249,7 +250,7 @@ export default class PostService{
                 transaction
             })
             if(result && result.authorId != userId){
-                throw new Error("게시자만 수정할 수 있습니다.")
+                throw new Error("게시자만 수정 또는 삭제할 수 있습니다.")
             } else if(!result) {
                 throw new Error("이미 삭제된 포스트 입니다.")
             }
@@ -257,6 +258,23 @@ export default class PostService{
         } catch(e) {
             throw e
         }
+    }
+
+
+    async deletePost(postDeleteDto : PostDeleteDto, token: string){
+        const result = await this.sequelize.transaction( async (transaction:Transaction)=>{
+            const { postId } = postDeleteDto
+            let userTokenDto = DtoFactory.create(UserTokenDto, { token })
+            const post: Post = (await this.isPostedUser(postId, userTokenDto.id, transaction)) as Post
+            await this.authService.getUserIfRegisted(userTokenDto.email, transaction)
+            return await Post.destroy({
+                where: {
+                    id: postId
+                },
+                transaction
+            })
+        })
+        return {count: result}
     }
 
     async updatePost(postUpdateDto : PostUpdateDto, token: string) : Promise<boolean>{
@@ -331,6 +349,7 @@ export default class PostService{
         }
     }
 
+
     async writeComment(postWriteCommentDto: PostWriteCommentDto, token: string){
         try{
             return await this.sequelize.transaction( async (transaction: Transaction)=> {
@@ -361,12 +380,4 @@ export default class PostService{
         })
     }
 
-    async deletePost(id : number){
-        const count = await Post.destroy({
-            where: {
-                id: id
-            }
-        })
-        return count
-    }
 }
