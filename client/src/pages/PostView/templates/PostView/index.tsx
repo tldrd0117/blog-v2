@@ -30,13 +30,13 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
         console.log("current")
         if(contentRef.current && currentPost.content){
             contentRef.current.innerHTML = marked(currentPost.content)
-            console.log(marked(currentPost.content))
             // const codeEles: HTMLCollectionOf<Element> = document.getElementsByClassName("_mirror_codes__")
             const codeEles = document.querySelectorAll(".postContent pre>code")
             if(codeEles && codeEles.length > 0){
                 Array.from(codeEles).forEach(element => {
                     const targetEle = element as HTMLElement
-                    const value = element.innerHTML
+                    console.log(element)
+                    const value = element.textContent
                     element.innerHTML = ''
                     const lang = element.getAttribute("class")?.replace("language-","")
                     const codemirror = CodeMirror(targetEle,{
@@ -54,7 +54,7 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
             if(codeInlineEles && codeInlineEles.length > 0){
                 Array.from(codeInlineEles).forEach(element => {
                     const targetEle = element as HTMLElement
-                    const value = element.innerHTML
+                    const value = element.textContent
                     element.innerHTML = ''
                     const codemirror = CodeMirror(targetEle,{
                         lineNumbers: false,
@@ -124,7 +124,11 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
                         padding: 20px;
                         margin-bottom: 80px;
                     }
+                    .CodeMirror{
+                        width: 300px !important;
+                    }
                 }
+
             `}</style>
         </>
     )

@@ -28,7 +28,7 @@ export default class PostService{
         let {limit, offset, word, type} = postSearchDto
         await this.updateTagNameViewCount(word)
         const jamoWord = stringUtils.predictJamo(word)
-        const searchTargetWords = `"${jamoWord?.join(" OR ")}" IN BOOLEAN MODE`
+        const searchTargetWords = `'"${jamoWord?.join('" OR "')}"' IN BOOLEAN MODE`
         const { rows, count } =  await Post.findAndCountAll({
             include: [{
                 model: Comment,
@@ -365,7 +365,6 @@ export default class PostService{
     }
 
     async updatePostPlusViewNumber(postId: number){
-        
         await Post.increment("view", {
             where: {
                 id: postId

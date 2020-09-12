@@ -7,6 +7,8 @@
 - dotenv : https://www.npmjs.com/package/dotenv
 - jwt: https://jwt.io/
 
+- pm2: https://engineering.linecorp.com/ko/blog/pm2-nodejs/
+
 
 
 ##### used framework
