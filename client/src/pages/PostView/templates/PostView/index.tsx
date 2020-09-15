@@ -93,7 +93,7 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
             </div>
             <Comments commentsLength={currentPost.commentsLength} comments={currentPost.comments} />
             <style jsx global>{`
-                @import "media.scss";
+                @import "index.scss";
                 .CodeMirror *{
                     font-family: Consolas;
                     font-size: 18px;
@@ -116,6 +116,29 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
                     p{
                         margin: 0px;
                     }
+                }
+                table{
+                    border-spacing: 0;
+                    border-collapse: collapse;
+                    box-shadow: $pt-elevation-shadow-2;
+                    border-radius: 5px;
+                }
+
+                table td:first-child{
+                    white-space:nowrap;
+                }
+
+                table thead tr{
+                    border-bottom: 1px solid rgb(128, 128, 128);
+                }
+
+                table tbody tr:not(:last-child){
+                    border-bottom: 1px solid rgb(128, 128, 128);
+                }
+
+                table td,th{
+                    text-align: left;
+                    padding: 16px;
                 }
                 
                 @include mobile{
