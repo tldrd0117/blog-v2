@@ -116,7 +116,7 @@ import "codemirror/mode/yacas/yacas"
 import "codemirror/mode/yaml/yaml"
 import "codemirror/mode/z80/z80"
 import "codemirror/mode/mscgen/mscgen"
-const all: Array<string> = [
+const all: Array<any> = [
     {name: "APL", mime: "text/apl", mode: "apl", ext: ["dyalog", "apl"]},
     {name: "PGP", mimes: ["application/pgp", "application/pgp-encrypted", "application/pgp-keys", "application/pgp-signature"], mode: "asciiarmor", ext: ["asc", "pgp", "sig"]},
     {name: "ASN.1", mime: "text/x-ttcn-asn", mode: "asn.1", ext: ["asn", "asn1"]},
@@ -275,9 +275,27 @@ const all: Array<string> = [
     {name: "mscgen", mime: "text/x-mscgen", mode: "mscgen", ext: ["mscgen", "mscin", "msc"]},
     {name: "xu", mime: "text/x-xu", mode: "mscgen", ext: ["xu"]},
     {name: "msgenny", mime: "text/x-msgenny", mode: "mscgen", ext: ["msgenny"]}
-  ].filter(v=>!["null"].includes(v.mode)).map(obj=>{
-    return `import "codemirror/mode/${obj.mode}/${obj.mode}"`
+  ]
+  // .filter(v=>!["null"].includes(v.mode)).map(obj=>{
+  //   return `import "codemirror/mode/${obj.mode}/${obj.mode}"`
+  // })
+export const searchMode = (lang: string|undefined) => {
+  if(!lang) return ""
+  const result = all.find(v=>{
+    let result = false
+    if(v.name) result = result || v.name.includes(lang)
+    if(v.ext) result = result || v.ext.includes(lang)
+    if(v.mode) result = result || v.mode == lang
+    return result
   })
-const modules = Array.from(new Set(all))
+  if(result.mime) return result.mime
+  if(result.mimes){
+    const selectedMimes = result.mimes.includes(lang)
+    if(selectedMimes) return selectedMimes
+    else return result.mimes[0]
+  }
+  return result? result.mode : ""
+}
+// const modules = Array.from(new Set(all))
 
   

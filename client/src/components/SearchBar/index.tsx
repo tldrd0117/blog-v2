@@ -1,11 +1,11 @@
-import React, { SyntheticEvent, ChangeEvent } from "react";
+import React, { SyntheticEvent, ChangeEvent, useMemo, useCallback } from "react";
 
 import { observer, useLocalStore } from "mobx-react";
 import { MenuItem, Position, Icon, InputGroup, Popover, Menu, Button, MenuDivider } from "@blueprintjs/core";
 import classNames from 'classnames/bind'
 import style from './searchbar.module.scss'
 import { values, reaction } from "mobx";
-import { debounce } from "../../utils/debounce";
+import { debounceFactory } from "../../utils/debounce";
 import { useStore } from "../../hooks";
 
 const cx = classNames.bind(style)
@@ -22,7 +22,7 @@ export default observer((props: SearchBarProps)=> {
     }))
 
     const { postStore } = useStore()
-
+    const debounce = useCallback(debounceFactory(),[])
     const search = () => {
         debounce(function(){
             if(!state.value){

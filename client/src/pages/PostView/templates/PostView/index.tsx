@@ -12,6 +12,7 @@ import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/material.css'
 
 import '@/utils/codemirrorModes'
+import { searchMode } from '@/utils/codemirrorModes';
 
 // marked.setOptions({
 //     highlight: function(code, lang) {
@@ -39,9 +40,10 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
                     const value = element.textContent
                     element.innerHTML = ''
                     const lang = element.getAttribute("class")?.replace("language-","")
+                    console.log(searchMode(lang))
                     const codemirror = CodeMirror(targetEle,{
                         lineNumbers: true,
-                        mode: lang,
+                        mode: searchMode(lang),
                         value,
                         theme: "default"
                     })
@@ -122,6 +124,7 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
                     border-collapse: collapse;
                     box-shadow: $pt-elevation-shadow-2;
                     border-radius: 5px;
+                    margin-bottom: 20px;
                 }
 
                 table td:first-child{

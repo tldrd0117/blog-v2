@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
-import { throttle } from '../utils/throttle'
+import { throttleFactory } from '../utils/throttle'
 
 export default (id: string) => {
   const [scroll, setScroll] = useState(true);
+  const throttle = throttleFactory()
 
   useEffect(() => {
     window.addEventListener('scroll', scrollHandler);
@@ -12,9 +13,8 @@ export default (id: string) => {
   });
   const scrollHandler = useCallback(() => {
       throttle(()=> {
-        console.log(id)
-      setScroll(window.scrollY == 0);
-    },100)()
+        setScroll(window.scrollY == 0);
+      },100)
   },[scroll]);
   return scroll;
 };

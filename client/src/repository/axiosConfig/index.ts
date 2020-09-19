@@ -1,10 +1,11 @@
-import axios, { AxiosInstance } from 'axios'
+import axios, { AxiosInstance, CancelToken, CancelTokenSource, CancelTokenStatic } from 'axios'
 import * as AxiosLogger from 'axios-logger';
 
 class AxiosWrapper{
     token = ""
     baseURL = ""
     instance!: AxiosInstance
+    cancelToken!: CancelTokenStatic
     constructor(){
         if(process.env.NODE_ENV=="development"){
             this.baseURL = 'http://localhost:8080'
@@ -12,6 +13,7 @@ class AxiosWrapper{
         this.instance = axios.create({
             baseURL: this.baseURL
         });
+        this.cancelToken = axios.CancelToken
         this.setInterceptors()
     }
 

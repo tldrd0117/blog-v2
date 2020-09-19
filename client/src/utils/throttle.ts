@@ -1,8 +1,8 @@
 
 
-export const throttle = function(callback: Function, time: number){
+export const throttleFactory = function(){
     let throttleCheck = false
-    return function(){
+    return function(callback: Function, time: number){
         if(!throttleCheck){
             throttleCheck = true
             setTimeout(() => {

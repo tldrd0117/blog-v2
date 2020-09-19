@@ -1,8 +1,10 @@
-import axios from './axiosConfig'
+import axios, {axiosWrapper} from './axiosConfig'
 import { PostUpdateDto, PostWriteDto, PostWriteCommentDto, PostPageDto, PostSearchDto, PostGetDto, PostPlusViewNumberDto, TagAllDto, PostDeleteDto } from '../models/PostDto'
+import { CancelTokenSource } from 'axios'
 // import { SigninDto, SignupDto } from '../models/auth/dto'
 class PostRepository{
     BASE_URL='/post'
+    beforeCancelToken: CancelTokenSource|undefined
 
     getPost(postGetDto: PostGetDto){
         return axios.post(`${this.BASE_URL}/`, postGetDto)
@@ -10,8 +12,16 @@ class PostRepository{
     getPosts(postPageDto: PostPageDto){
         return axios.post(`${this.BASE_URL}/list`, postPageDto)
     }
-    searchPost(postSearchDto:PostSearchDto){
-        return axios.post(`${this.BASE_URL}/search`, postSearchDto)
+    async searchPost(postSearchDto:PostSearchDto){
+        if(this.beforeCancelToken){
+            this.beforeCancelToken.cancel("Requested canceled")
+        }
+        this.beforeCancelToken = axiosWrapper.cancelToken.source()
+        const res = await axios.post(`${this.BASE_URL}/search`, postSearchDto, {
+            cancelToken: this.beforeCancelToken.token
+        })
+        if(res) this.beforeCancelToken = undefined
+        return res
     }
     writePost(postWriteDto : PostWriteDto){
         return axios.post(`${this.BASE_URL}/write`, postWriteDto)

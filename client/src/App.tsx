@@ -12,7 +12,6 @@ import User from './pages/User';
 import PostWrite from './pages/PostWrite';
 import PostView from './pages/PostView';
 import { useStore } from './hooks';
-import { throttle } from './utils/throttle';
 
 function App() {
   return (

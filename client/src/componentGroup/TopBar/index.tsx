@@ -1,11 +1,12 @@
 import React, { ComponentProps, useRef, Ref, useEffect } from 'react'
 import { observer, useLocalStore } from 'mobx-react'
 import { Button, Icon, Position, Elevation, Classes } from '@blueprintjs/core'
-import { useHistory, useLocation, useParams } from 'react-router-dom'
+import { useHistory, useLocation, useParams, Link } from 'react-router-dom'
 import { useStore, useScrollTop, useMediaQuery } from '../../hooks';
 import SearchBar from '../../components/SearchBar'
 import { computed, toJS, reaction } from 'mobx'
 import { MediaQuery } from '../../hooks/mediaQuery'
+import LinkButton from '@/components/LinkButton';
 
 interface TopBarProps{
     searchBar?: boolean
@@ -64,7 +65,7 @@ export default observer(({searchBar = true, scrollAnimation = false}: TopBarProp
     return (
         <>
             <div style={toJS(state.topbarStyle)} className={`topbar-fixed ${Classes.ELEVATION_0}`}>
-                <p className={"header"}>BLOG-V2</p>
+                <Link to={"/"} className={"header"}>BLOG-V2</Link>
                 {
                     searchBar?(
                         <div className={`searchWrapper`}>
@@ -113,14 +114,18 @@ export default observer(({searchBar = true, scrollAnimation = false}: TopBarProp
                     transition: top 0.3s, padding 0.3s;
                 }
 
-                .header{
+                :global(.header){
                     width: auto;
                     text-align: left;
                     margin: 0px;
                     margin-left: 20px;
                     font-size: 18px;
                     font-family: BMEULJIRO;
-                    color: #2965CC;
+                    color: #2965CC !important;
+                    background-color: transparent;
+                    &:hover{
+                        text-decoration: none;
+                    }
                 }
 
                 .searchWrapper{
