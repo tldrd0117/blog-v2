@@ -42,7 +42,6 @@ export class PostDto implements Dto{
     public userId?: number = undefined
     @Length(1,200, lengthMsg("제목"))
     public title: string = ""
-    @Length(1, 10000, lengthMsg("내용"))
     public content: string = ""
     @Length(1,200,{
         each: true,
@@ -94,7 +93,6 @@ export class TagAllDto implements Dto {
 export class PostWriteDto implements Dto{
     @Length(1,200, lengthMsg("제목"))
     public title: string = ""
-    @Length(1, 10000, lengthMsg("내용"))
     public content: string = ""
     @Length(1,200,{
         each: true,
@@ -107,7 +105,6 @@ export class PostUpdateDto implements Dto{
     public postId: number = 0
     @Length(1,200, lengthMsg("제목"))
     public title: string = ""
-    @Length(1, 10000, lengthMsg("내용"))
     public content: string = ""
     @Length(1,200,{
         each: true,

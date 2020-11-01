@@ -21,7 +21,7 @@ import { searchMode } from '@/utils/codemirrorModes';
 // });
 
 export default observer((props: HTMLAttributes<HTMLElement>)=>{
-    const { postId } = useParams()
+    const { postId } : any = useParams()
     const contentRef: Ref<HTMLParagraphElement>|null = useRef(null)
     const { postStore ,postStore: { currentPost } } = useStore()
     const getPost = async () => {
@@ -52,21 +52,21 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
 
                 })
             }
-            const codeInlineEles = document.querySelectorAll(".postContent p>code")
-            if(codeInlineEles && codeInlineEles.length > 0){
-                Array.from(codeInlineEles).forEach(element => {
-                    const targetEle = element as HTMLElement
-                    const value = element.textContent
-                    element.innerHTML = ''
-                    const codemirror = CodeMirror(targetEle,{
-                        lineNumbers: false,
-                        value,
-                        theme: "default"
-                    })
-                    codemirror.setSize("100%","auto");
+            // const codeInlineEles = document.querySelectorAll(".postContent p>code")
+            // if(codeInlineEles && codeInlineEles.length > 0){
+            //     Array.from(codeInlineEles).forEach(element => {
+            //         const targetEle = element as HTMLElement
+            //         const value = element.textContent
+            //         element.innerHTML = ''
+            //         const codemirror = CodeMirror(targetEle,{
+            //             lineNumbers: false,
+            //             value,
+            //             theme: "default"
+            //         })
+            //         codemirror.setSize("100%","auto");
                     
-                })
-            }
+            //     })
+            // }
         }
     }, [currentPost.content])
     useEffect( () => {
@@ -99,6 +99,10 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
                 .CodeMirror *{
                     font-family: Consolas;
                     font-size: 18px;
+                }
+                p{
+                    font-size: 18px;
+                    line-height: 27px;
                 }
                 .postView{
                     width: 700px;
@@ -142,6 +146,14 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
                 table td,th{
                     text-align: left;
                     padding: 16px;
+                }
+
+                .postContent p>code{
+                    background-color: #f8f8f8;
+                    color: rgb(41, 101, 204);
+                    padding: 4px;
+                    margin: 1px;
+                    border-radius: 4px;
                 }
                 
                 @include mobile{
