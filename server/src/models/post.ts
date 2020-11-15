@@ -66,9 +66,9 @@ export const initRelation = () => {
 
     Post.belongsToMany(Tag, {
         through: PostTag,
-        as: "tags",
         foreignKey: 'postId',
-        otherKey: 'tagId'
+        otherKey: 'tagId',
+        as: 'tags'
     });
 
     Post.hasMany(Comment, {

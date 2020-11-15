@@ -1,4 +1,6 @@
 import { Model, Association, DataTypes, Sequelize } from 'sequelize';
+import Post from './post';
+import Tag from './tag';
 
 export default class PostTag extends Model {
     public tagId!: number;

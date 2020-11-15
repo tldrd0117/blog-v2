@@ -36,11 +36,9 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
             if(codeEles && codeEles.length > 0){
                 Array.from(codeEles).forEach(element => {
                     const targetEle = element as HTMLElement
-                    console.log(element)
                     const value = element.textContent
                     element.innerHTML = ''
                     const lang = element.getAttribute("class")?.replace("language-","")
-                    console.log(searchMode(lang))
                     const codemirror = CodeMirror(targetEle,{
                         lineNumbers: true,
                         mode: searchMode(lang),
@@ -70,6 +68,7 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
         }
     }, [currentPost.content])
     useEffect( () => {
+        postStore.currentPost = {};
         getPost()
     },[])
 
