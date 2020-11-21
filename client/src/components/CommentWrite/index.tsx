@@ -22,7 +22,7 @@ export default observer((props: CommentWriteProps)=>{
     const state = useLocalStore(()=>({
         contents: ""
     }))
-    const { postId } = useParams()
+    const { postId } : any = useParams()
     const { target } = props
     const isDepthOneComment = !target.username;
     let title = "새로 댓글추가"

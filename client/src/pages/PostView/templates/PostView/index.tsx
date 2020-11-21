@@ -21,11 +21,16 @@ import { searchMode } from '@/utils/codemirrorModes';
 // });
 
 export default observer((props: HTMLAttributes<HTMLElement>)=>{
+    const localStore = useLocalStore(()=>({
+        isLoading: true
+    }))
     const { postId } : any = useParams()
     const contentRef: Ref<HTMLParagraphElement>|null = useRef(null)
     const { postStore ,postStore: { currentPost } } = useStore()
     const getPost = async () => {
+        postStore.currentPost = {};
         const data: PostDto = await postStore.getPost({postId})
+        localStore.isLoading = false;
     }
     useEffect(()=>{
         console.log("current")
@@ -68,16 +73,15 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
         }
     }, [currentPost.content])
     useEffect( () => {
-        postStore.currentPost = {};
         getPost()
     },[])
 
     return(
         <>
             <div className={`${props.className} postView`}>
-                <H1>{currentPost.title}</H1>
+                <H1 className={localStore.isLoading?"bp3-skeleton loading-title":""}>{currentPost.title}</H1>
                 <p>{currentPost.username}</p>
-                <p>{moment(currentPost.updatedAt).locale("ko").fromNow()}</p>
+                <p className={localStore.isLoading?"loading-empty":""}>{moment(currentPost.updatedAt).locale("ko").fromNow()}</p>
                 {
                     currentPost.tags?.map((v:any, i: number)=>
                     <Tag
@@ -89,7 +93,7 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
                         >{v.tagName}</Tag>
                     )
                 }
-                <p className={"postContent"} ref={contentRef}></p>
+                <p className={`postContent ${localStore.isLoading?"bp3-skeleton loading-contents":""}`} ref={contentRef}></p>
                 {/* <p>{state.comments}</p> */}
             </div>
             <Comments commentsLength={currentPost.commentsLength} comments={currentPost.comments} />
@@ -98,6 +102,16 @@ export default observer((props: HTMLAttributes<HTMLElement>)=>{
                 .CodeMirror *{
                     font-family: Consolas;
                     font-size: 18px;
+                }
+                .loading-title{
+                    height: 70px;
+                }
+                .loading-empty{
+                    height: 0px;
+                    overflow: hidden;
+                }
+                .loading-contents{
+                    height: 700px;
                 }
                 p{
                     font-size: 18px;
