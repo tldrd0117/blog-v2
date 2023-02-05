@@ -167,7 +167,7 @@
   },
   "devDependencies": {
     "axios-logger": "^2.3.1",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "styled-jsx-css-loader": "^0.3.0",
     "styled-jsx-plugin-postcss": "^2.0.1",
     "styled-jsx-plugin-sass": "^1.0.0"
